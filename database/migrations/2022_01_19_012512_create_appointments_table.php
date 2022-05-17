@@ -15,8 +15,6 @@ class CreateAppointmentsTable extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id('appointment_id');
-            $table->unsignedBigInteger('appointment_type_id');
-            $table->foreign('appointment_type_id')->references('appointment_type_id')->on('appointment_types');
             $table->unsignedBigInteger('appointment_user_id');
             $table->foreign('appointment_user_id')->references('user_id')->on('users');
             $table->date('app_date')->nullable();

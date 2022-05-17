@@ -63,9 +63,10 @@ Route::get('/get-users', [App\Http\Controllers\Administrator\UserController::cla
 Route::get('/get-user-offices', [App\Http\Controllers\Administrator\UserController::class, 'getOffices']);
 
 //AppointmentType
-Route::resource('/appointment-type', App\Http\Controllers\Administrator\AppointmentTypeController::class);
-Route::get('/get-appointment-types', [App\Http\Controllers\Administrator\AppointmentTypeController::class, 'getAppointmentTypes']);
-Route::get('/get-open-appointment-types', [App\Http\Controllers\AppointmentTypeOpenController::class, 'getAppointmentTypes']);
+Route::resource('/training_centers', App\Http\Controllers\Administrator\TrainingCentersController::class);
+Route::get('/get-appointment-types', [App\Http\Controllers\Administrator\TrainingCentersController::class, 'getAppointmentTypes']);
+Route::get('/get-open-appointment-types', [App\Http\Controllers\Administrator\TrainingCentersController::class, 'getAppointmentTypes']);
+Route::get('/get-open-training-centers', [App\Http\Controllers\OpenTrainingCentersController::class, 'getOpenTrainingCenters']);
 
 
 Route::resource('/ordinance', App\Http\Controllers\Administrator\OrdinanceController::class);

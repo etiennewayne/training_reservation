@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrdinancesTable extends Migration
+class CreateTrainingCentersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateOrdinancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ordinances', function (Blueprint $table) {
-            $table->id('ordinance_id');
-            $table->string('ordinance_name')->nullable();
-            $table->string('ordinance_img_path')->nullable();
-
+        Schema::create('training_centers', function (Blueprint $table) {
+            $table->id('training_center_id');
+            $table->string('training_center')->nullable();
+            $table->string('address')->nullable();
+            $table->string('img_path')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateOrdinancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ordinance');
+        Schema::dropIfExists('training_centers');
     }
 }

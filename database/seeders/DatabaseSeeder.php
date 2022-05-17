@@ -16,11 +16,9 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call([
-            OfficeSeeder::class,
+            TrainingCenterSeeder::class,
             UserSeeder::class,
-            AppointmentTypeSeeder::class,
             AppClockSeeder::class,
-            HealthQuestionSeeder::class,
         ]);
     }
 }

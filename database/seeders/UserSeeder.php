@@ -70,60 +70,7 @@ class UserSeeder extends Seeder
                 'remark' => '',
                 'password' => Hash::make('a')
             ],
-            [
-                'qr_ref' => 'REG1234',
-                'username' => 'reg',
-                'lname' => 'AMPARADO',
-                'fname' => 'ETIENNE WAYNE',
-                'mname' => '',
-                'sex' => 'MALE',
-                'province' => 'MISMAIS OCCIDENTAL',
-                'city' => 'OZAMIS CITY',
-                'barangay' => 'SINUSZA',
-                'street' => 'P-SAMPLE',
-                'email' => 'reg@dev.com',
-                'contact_no' => '09167781122',
-                'role' => 'OFFICE',
-                'office_id' => 6,
-                'remark' => 'PROCESSING',
-                'password' => Hash::make('a')
-            ],
-            [
-                'qr_ref' => 'OSA1234',
-                'username' => 'osa',
-                'lname' => 'AMPARADO',
-                'fname' => 'ETIENNE WAYNE',
-                'mname' => '',
-                'sex' => 'MALE',
-                'province' => 'MISMAIS OCCIDENTAL',
-                'city' => 'OZAMIS CITY',
-                'barangay' => 'SINUSZA',
-                'street' => 'P-SAMPLE',
-                'email' => 'osa@dev.com',
-                'contact_no' => '09167781123',
-                'role' => 'OFFICE',
-                'office_id' => 1,
-                'remark' => 'PROCESSING',
-                'password' => Hash::make('a')
-            ],
-            [
-                'qr_ref' => 'ACC1234',
-                'username' => 'acc',
-                'lname' => 'AMPARADO',
-                'fname' => 'ETIENNE WAYNE',
-                'mname' => '',
-                'sex' => 'MALE',
-                'province' => 'MISMAIS OCCIDENTAL',
-                'city' => 'OZAMIS CITY',
-                'barangay' => 'SINUSZA',
-                'street' => 'P-SAMPLE',
-                'email' => 'acc@dev.com',
-                'contact_no' => '09167781124',
-                'role' => 'OFFICE',
-                'office_id' => 5,
-                'remark' => 'PROCESSING',
-                'password' => Hash::make('a')
-            ]
+
         ];
 
         \App\Models\User::insertOrIgnore($data);
