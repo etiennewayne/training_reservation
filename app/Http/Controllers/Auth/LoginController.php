@@ -44,6 +44,10 @@ class LoginController extends Controller
 //        return view('auth.login');
 //    }
 
+public function index(){
+        return view('login');
+}
+
     public function login(Request $request)
     {
         $credentials = $request->validate([

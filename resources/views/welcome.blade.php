@@ -1,11 +1,18 @@
 @extends('layouts.no-navbar')
 @section('content')
     @auth
-        <home-page prop-user='@json($user)'></home-page>
+        <navbar-menu prop-is-auth="1"></navbar-menu>
+        <welcome prop-is-auth="1"></welcome>
     @else
-        <home-page prop-user=''></home-page>
+
+        <navbar-menu prop-is-auth="0"></navbar-menu>
+        <welcome prop-is-auth="0"></welcome>
     @endauth
 
 
 
+
+    <footer-page></footer-page>
+
 @endsection
+

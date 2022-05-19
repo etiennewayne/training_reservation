@@ -15,14 +15,13 @@ class CreateAppointmentsTable extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id('appointment_id');
+            $table->string('ref_no')->unique();
             $table->unsignedBigInteger('appointment_user_id');
             $table->foreign('appointment_user_id')->references('user_id')->on('users');
             $table->date('app_date')->nullable();
-            $table->time('app_time_from')->nullable();
-            $table->time('app_time_to')->nullable();
-            $table->tinyInteger('is_approved')->default(0);
-            $table->string('visit_status')->nullable();
-
+            $table->time('app_time')->nullable();
+            $table->text('remarks')->nullable();
+            $table->tinyInteger('app_status')->default(0);
             $table->timestamps();
         });
     }

@@ -12,6 +12,14 @@ class Appointment extends Model
     protected $table = 'appointments';
     protected $primaryKey = 'appointment_id';
 
-    protected $fillable = ['appointment_type_id', 'appointment_user_id', 'app_date', 'app_time_from',
-        'app_time_to', 'is_approve', 'visit_status'];
+    protected $fillable = ['ref_no', 'appointment_user_id',
+        'app_date', 'app_time',
+        'app_status', 'remarks'];
+
+
+    public function appointments(){
+        return $this->hasOne(User::class, 'user_id', 'appointment_user_id');
+    }
+
+
 }

@@ -24,28 +24,33 @@ class MyAppointmentController extends Controller
     }
 
     public function getMyAppointment(Request $req){
+        $user =  Auth::user();
+
+
 
         $sort = explode('.', $req->sort_by);
 
-        $user =  Auth::user();
-
         $date = $req->appdate;
-       // $ndate = date('Y-m-d',strtotime($date)); //convert to format time UNIX
+        //$ndate = date('Y-m-d',strtotime($date)); //convert to format time UNIX
 
         if($req->appdate){
             $ndate = date("Y-m-d", strtotime($req->appdate));
         }else{
             $ndate = '';
         }
-
-
-        return Appointment::from('appointments as a')
-            ->join('appointment_types as b', 'a.appointment_type_id', 'b.appointment_type_id')
-            ->join('offices as c', 'b.office_id', 'c.office_id')
+        return Appointment::with(['appointments'])
             ->where('appointment_user_id', $user->user_id)
             ->where('app_date', 'like',  $ndate . '%')
             ->orderBy($sort[0], $sort[1])
             ->paginate($req->perpage);
+
+//        return Appointment::from('appointments as a')
+//            ->join('appointment_types as b', 'a.appointment_type_id', 'b.appointment_type_id')
+//            ->join('offices as c', 'b.office_id', 'c.office_id')
+//            ->where('appointment_user_id', $user->user_id)
+//            ->where('app_date', 'like',  $ndate . '%')
+//            ->orderBy($sort[0], $sort[1])
+//            ->paginate($req->perpage);
     }
 
     public function upcomingAppointment(){

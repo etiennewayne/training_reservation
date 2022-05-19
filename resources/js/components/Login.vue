@@ -8,8 +8,8 @@
                     </div>
 
                     <div class="panel-body">
-                        <b-field label="Email" label-position="on-border">
-                            <b-input type="text" v-model="fields.username" placeholder="Email" />
+                        <b-field label="Username" label-position="on-border">
+                            <b-input type="text" v-model="fields.username" placeholder="Username" />
                         </b-field>
 
                         <b-field label="Password" label-position="on-border">
@@ -17,7 +17,7 @@
                         </b-field>
 
                         <div class="buttons">
-                            <b-button type="is-success">LOGIN</b-button>
+                            <button class="button is-success">LOGIN</button>
                         </div>
                     </div>
                 </div>
@@ -41,8 +41,11 @@ export default {
 
     methods: {
         submit: function(){
-            axios.post('/login').then(res=>{
+            axios.post('/login', this.fields).then(res=>{
                 console.log(res.data)
+                if(res.data.role === 'USER'){
+                    window.location = '/';
+                }
                // window.location = '/dashboard';
             })
         }
@@ -63,7 +66,9 @@ export default {
         width: 500px;
     }
 
-
+    .panel-body{
+        padding: 25px;
+    }
 
 
 

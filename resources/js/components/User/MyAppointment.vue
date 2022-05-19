@@ -60,16 +60,20 @@
                                 {{ props.row.appointment_id }}
                             </b-table-column>
 
-                            <b-table-column field="appointment_type" label="Appointment" v-slot="props">
-                                {{ props.row.appointment_type }}
+                            <b-table-column field="ref_no" label="Reference" v-slot="props">
+                                {{ props.row.ref_no }}
                             </b-table-column>
 
                             <b-table-column field="app_date" label="Appointment Date" v-slot="props">
                                 {{ props.row.app_date }}
                             </b-table-column>
 
-                            <b-table-column field="from_to" label="From/To" v-slot="props">
-                                {{ props.row.app_time_from }} -   {{ props.row.app_time_to }}
+                            <b-table-column field="app_time" label="Appointment Time" v-slot="props">
+                                {{ props.row.app_time }}
+                            </b-table-column>
+
+                            <b-table-column field="remarks" label="Remarks" v-slot="props">
+                                {{ props.row.remarks }}
                             </b-table-column>
 
                             <b-table-column field="is_approved" label="Is Approved" v-slot="props">
@@ -80,7 +84,7 @@
 
                             <b-table-column label="Action" v-slot="props">
                                 <div class="is-flex">
-        
+
 
                                     <b-tooltip label="Cancel appointment" type="is-danger">
                                         <b-button class="button is-small is-danger mr-1" icon-right="minus-circle" @click="cancelAppointment(props.row)"></b-button>
@@ -112,13 +116,13 @@ export default {
             page: 1,
             perPage: 5,
             defaultSortDirection: 'asc',
-            
+
             search: {
                 appointment_type: '',
                 appointment_date: new Date(),
             },
 
-     
+
             btnClass: {
                 'is-success': true,
                 'button': true,
@@ -134,7 +138,7 @@ export default {
         */
         loadAsyncData() {
 
-         
+
             if(this.search.appointment_date){
                 this.search.ndate = new Date(this.search.appointment_date).toLocaleDateString();
             }else{
