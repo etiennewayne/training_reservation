@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Administrator;
 
-use App\Models\AppointmentType;
+use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AppointmentTypeController extends Controller
+class AppointmentController extends Controller
 {
     //
 
@@ -17,7 +17,7 @@ class AppointmentTypeController extends Controller
 
 
     public function index(){
-        return view('administrator.appointment-type');
+        return view('administrator.appointments');
     }
 
     public function getAppointmentTypes(Request $req){
@@ -37,6 +37,13 @@ class AppointmentTypeController extends Controller
             ->join('offices as b', 'a.office_id', 'b.office_id')
             ->where('a.appointment_type_id', $id)
             ->get();
+    }
+
+
+    public function getAppointments(Request $req){
+        $data = Appointment::with(['user'])->paginate($req->per_page);
+
+        return $data;
     }
 
 

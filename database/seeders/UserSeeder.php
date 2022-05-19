@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
                 'street' => 'P-6',
                 'email' => 'angel@dev.com',
                 'contact_no' => '09167789585',
-                'role' => 'ADMINISTRATOR',
+                'role' => 'staff',
                 'office_id' => 0,
                 'remark' => '',
                 'password' => Hash::make('a')

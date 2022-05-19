@@ -55,15 +55,17 @@ Route::get('/load-barangays', [App\Http\Controllers\AddressController::class, 'l
 
 
 
-/*     ADMINSITRATOR          */
-Route::resource('/dashboard-admin', App\Http\Controllers\Administrator\AdminDashboardController::class);
+/*     ADMINSITRATOR/CPANEL      */
+Route::resource('/cpanel', App\Http\Controllers\Administrator\CpanelController::class);
 
 Route::resource('/users', App\Http\Controllers\Administrator\UserController::class);
 Route::get('/get-users', [App\Http\Controllers\Administrator\UserController::class, 'getUsers']);
 Route::get('/get-user-offices', [App\Http\Controllers\Administrator\UserController::class, 'getOffices']);
 
-//AppointmentType
-Route::resource('/training_centers', App\Http\Controllers\Administrator\TrainingCentersController::class);
+//APPOINTMENT
+Route::resource('/appointments', App\Http\Controllers\Administrator\AppointmentController::class);
+Route::get('/get-appointments', [App\Http\Controllers\Administrator\AppointmentController::class, 'getAppointments']);
+
 
 Route::get('/get-open-training-centers', [App\Http\Controllers\OpenTrainingCentersController::class, 'getOpenTrainingCenters']);
 

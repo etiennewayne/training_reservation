@@ -29,6 +29,7 @@
         <?php echo $__env->yieldContent('content'); ?>
     </div>
 
+         <footer-component></footer-component>
 
     </div>
 </body>

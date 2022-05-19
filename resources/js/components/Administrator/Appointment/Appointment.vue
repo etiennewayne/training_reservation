@@ -5,7 +5,7 @@
             <div class="columns">
                 <div class="column is-8 is-offset-2">
                     <div class="box">
-                        <div class="is-flex is-justify-content-center mb-2" style="font-size: 20px; font-weight: bold;">LIST OF APPOINTMENT TYPE</div>
+                        <div class="is-flex is-justify-content-center mb-2" style="font-size: 20px; font-weight: bold;">LIST OF APPOINTMENT</div>
 
                         <div class="level">
                             <div class="level-left">
@@ -28,7 +28,7 @@
                                 <div class="level-item">
                                     <b-field label="Search">
                                         <b-input type="text"
-                                                 v-model="search.appointment_type" placeholder="Search Appointment Type"
+                                                 v-model="search.app_date" placeholder="Search Appointment"
                                                  @keyup.native.enter="loadAsyncData"/>
                                         <p class="control">
                                              <b-tooltip label="Search" type="is-success">
@@ -58,28 +58,28 @@
                             :default-sort-direction="defaultSortDirection"
                             @sort="onSort">
 
-                            <b-table-column field="appointment_type_id" label="ID" v-slot="props">
-                                {{ props.row.appointment_type_id }}
+                            <b-table-column field="appointment_id" label="ID" v-slot="props">
+                                {{ props.row.appointment_id }}
                             </b-table-column>
 
-                            <b-table-column field="office_name" label="Office Name" v-slot="props">
-                                {{ props.row.office_name }}
+                             <b-table-column field="ref_no" label="Reference No." v-slot="props">
+                                {{ props.row.ref_no }}
                             </b-table-column>
 
-                            <b-table-column field="appointment_type" label="Appointment" v-slot="props">
-                                {{ props.row.appointment_type }}
+                            <b-table-column field="fullname" label="Appointee" v-slot="props">
+                                {{ props.row.user.lname }}, {{ props.row.user.fname }} {{ props.row.user.mname }}
                             </b-table-column>
 
-                            <b-table-column field="cc_time" label="Time Allocated" v-slot="props">
-                                {{ props.row.cc_time }}
+                            <b-table-column field="app_date" label="Appointment Date" v-slot="props">
+                                {{ props.row.app_date }}
                             </b-table-column>
 
-                            <b-table-column field="max_multiple" label="Max Multiple" v-slot="props">
-                                {{ props.row.max_multiple }}
+                            <b-table-column field="app_time" label="Appointment Time" v-slot="props">
+                                {{ props.row.app_time }}
                             </b-table-column>
 
-                            <b-table-column field="is_active" label="Active" v-slot="props">
-                                {{ props.row.is_active }}
+                            <b-table-column field="remarks" label="Active" v-slot="props">
+                                {{ props.row.remarks }}
                             </b-table-column>
 
                             <b-table-column label="Action" v-slot="props">
@@ -132,48 +132,29 @@
 
                             <div class="columns">
                                 <div class="column">
-                                    <b-field label="Office"
-                                             :type="this.errors.office_id ? 'is-danger':''"
-                                             :message="this.errors.office_id ? this.errors.office_id[0] : ''">
-                                        <b-select v-model="fields.office_id" placeholder="Office" required>
-                                            <option v-for="(item, index) in offices" :key="index" :value="item.office_id">{{ item.office_name }}</option>
-                                        </b-select>
-                                    </b-field>
-                                </div>
-                            </div>
-
-                            <div class="columns">
-                                <div class="column">
                                     <b-field label="Appointment Type"
-                                             :type="this.errors.appointment_type ? 'is-danger':''"
-                                             :message="this.errors.appointment_type ? this.errors.appointment_type[0] : ''">
-                                        <b-input v-model="fields.appointment_type"
-                                                 placeholder="Appointment Type" required>
-                                        </b-input>
+                                             :type="this.errors.appointment ? 'is-danger':''"
+                                             :message="this.errors.appointment ? this.errors.appointment[0] : ''">
+                                        <b-datetimepicker v-model="fields.appointment"
+                                                 placeholder="Appointment" required>
+                                        </b-datetimepicker>
                                     </b-field>
                                 </div>
                             </div>
 
                             <div class="columns">
                                 <div class="column">
-                                    <b-field label="Allocated Time(Minute(s))"
-                                             :type="this.errors.cc_time ? 'is-danger':''"
-                                             :message="this.errors.cc_time ? this.errors.cc_time[0] : ''">
-                                        <b-numberinput v-model="fields.cc_time" :controls="false"
-                                                           placeholder="" required>
-                                        </b-numberinput>
-                                    </b-field>
-                                </div>
-
-                                <div class="column">
-                                    <b-field label="No of multiple"
-                                             :type="this.errors.max_multiple ? 'is-danger':''"
-                                             :message="this.errors.max_multiple ? this.errors.max_multiple[0] : ''">
-                                        <b-numberinput v-model="fields.max_multiple" max="100" :controls="false" placeholder="No of multiple" required>
-                                        </b-numberinput>
-                                    </b-field>
+                                    <b-field label="TRAINING CENTER" expanded label-position="on-border"
+                                         :type="errors.training_center ? 'is-danger' : ''"
+                                         :message="errors.training_center ? errors.training_center[0] : ''">
+                                    <b-select v-model="fields.training_center" expanded rounded>
+                                        <option v-for="(item, index) in trainingCenters" :key="index" :value="item.traning_center_id">{{ item.training_center }}</option>
+                                    </b-select>
+                                </b-field>
                                 </div>
                             </div>
+
+                            
                         </div>
                     </section>
                     <footer class="modal-card-foot">
@@ -202,29 +183,35 @@ export default {
             data: [],
             total: 0,
             loading: false,
-            sortField: 'appointment_type_id',
+            sortField: 'appointment_id',
             sortOrder: 'desc',
             page: 1,
             perPage: 5,
             defaultSortDirection: 'asc',
 
+            locale: undefined, // Browser locale
 
             global_id : 0,
 
             search: {
-                appointment_type: '',
+                app_date: '',
             },
 
             isModalCreate: false,
 
             fields: {
-                office_id: 0,
+                appointment_date: null,
+                nAppointmentDate: '',
                 appointment_type: '',
-
             },
+
+            
+
+            trainingCenters: [],
+
             errors: {},
 
-            offices: [],
+    
 
             btnClass: {
                 'is-success': true,
@@ -248,7 +235,7 @@ export default {
             ].join('&')
 
             this.loading = true
-            axios.get(`/get-appointment-types?${params}`)
+            axios.get(`/get-appointments?${params}`)
                 .then(({ data }) => {
                     this.data = [];
                     let currentTotal = data.total
@@ -290,16 +277,17 @@ export default {
 
         openModal(){
             this.isModalCreate=true;
-            this.fields = {};
-            this.errors = {};
-
-
+            this.clearFields();
         },
 
-        loadOffices(){
-            axios.get('/load-offices').then(res=>{
-                this.offices = res.data;
-            })
+
+        clearFields(){
+            this.fields = {
+                appointment_date: null,
+                nAppointmentDate: '',
+                appointment_type: '',
+            };
+            this.errors = {};
         },
 
 
@@ -390,13 +378,21 @@ export default {
                     }
                 });
             }
-        }
+        },
+
+
+        loadTrainingCenter(){
+            axios.get('/get-open-training-centers').then(res=>{
+                this.trainingCenters = res.data;
+            })
+        },
 
     },
 
     mounted() {
-        this.loadOffices();
+      
         this.loadAsyncData();
+        this.loadTrainingCenter();
     }
 
 }

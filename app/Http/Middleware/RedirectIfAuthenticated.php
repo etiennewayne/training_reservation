@@ -27,7 +27,11 @@ class RedirectIfAuthenticated
                 $user = Auth::user();
 
                 if($user->role === 'ADMINISTRATOR'){
-                    return redirect('/admin-dashboard');
+                    return redirect('/cpanel');
+                }
+
+                if($user->role === 'STAFF'){
+                    return redirect('/cpanel');
                 }
 
                 if($user->role === 'USER'){

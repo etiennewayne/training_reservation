@@ -1,8 +1,15 @@
 <template>
   <div>
-    <section class="hero is-fullheight">
+    <section class="hero is-fullheight-with-navbar">
             <!-- Hero head: will stick at the top -->
             <div class="hero-head">
+                
+            </div>
+
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title">WELCOME TO CONTROL PANEL</h1>
+                </div>
             </div>
     </section>
       
@@ -16,9 +23,9 @@ export default {
 </script>
 
 <style>
- .hero{
+ /* .hero{
         background-image: url("/img/bg-hero.jpg");
         background-repeat: no-repeat;
         background-size: cover;
-    } 
+    }  */
 </style>

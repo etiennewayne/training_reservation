@@ -17,7 +17,7 @@ class Appointment extends Model
         'app_status', 'remarks'];
 
 
-    public function appointments(){
+    public function user(){
         return $this->hasOne(User::class, 'user_id', 'appointment_user_id');
     }
 

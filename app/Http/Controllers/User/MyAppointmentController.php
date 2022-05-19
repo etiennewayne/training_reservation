@@ -38,7 +38,7 @@ class MyAppointmentController extends Controller
         }else{
             $ndate = '';
         }
-        return Appointment::with(['appointments'])
+        return Appointment::with(['user'])
             ->where('appointment_user_id', $user->user_id)
             ->where('app_date', 'like',  $ndate . '%')
             ->orderBy($sort[0], $sort[1])
