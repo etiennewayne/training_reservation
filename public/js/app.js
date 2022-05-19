@@ -9611,6 +9611,10 @@ __webpack_require__.r(__webpack_exports__);
 
         if (res.data.role === 'USER') {
           window.location = '/';
+        }
+
+        if (res.data.role === 'ADMINISTRATOR') {
+          window.location = '/admin-dashboard';
         } // window.location = '/dashboard';
 
       });
