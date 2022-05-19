@@ -230,30 +230,9 @@
                                              :message="this.errors.role ? this.errors.role[0] : ''">
                                         <b-select v-model="fields.role" expanded>
                                             <option value="ADMIN">ADMINISTRATOR</option>
-                                            <option value="OFFICE">OFFICE</option>
+                                            <option value="STAFF">STAFF</option>
                                             <option value="USER">USER</option>
                                         </b-select>
-                                    </b-field>
-                                </div>
-
-                            </div>
-
-                            <div class="columns">
-                                <div class="column" v-if="fields.role === 'OFFICE'">
-                                    <b-field label="Office" label-position="on-border" expanded
-                                             :type="this.errors.office ? 'is-danger':''"
-                                             :message="this.errors.office ? this.errors.office[0] : ''">
-                                        <b-select v-model="fields.office" expanded>
-                                            <option v-for="(item, index) in offices" :key="index" :value="item.office_id">{{ item.office_name }}</option>
-                                        </b-select>
-                                    </b-field>
-                                </div>
-
-                                <div class="column">
-                                    <b-field label="Remark" label-position="on-border" expanded
-                                             :type="this.errors.remark ? 'is-danger':''"
-                                             :message="this.errors.remark ? this.errors.remark[0] : ''">
-                                        <b-input type="text" v-model="fields.remark" expanded></b-input>
                                     </b-field>
                                 </div>
 
@@ -550,17 +529,13 @@ export default{
             });
         },
 
-        loadOffices(){
-            axios.get('/get-user-offices').then(res=>{
-                this.offices = res.data
-            });
-        }
+     
 
 
     },
 
     mounted() {
-        this.loadOffices();
+    
         this.loadAsyncData();
         this.loadProvince();
     }

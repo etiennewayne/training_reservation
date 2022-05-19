@@ -78,7 +78,7 @@
                                 {{ props.row.app_time }}
                             </b-table-column>
 
-                            <b-table-column field="remarks" label="Active" v-slot="props">
+                            <b-table-column field="remarks" label="Remarks" v-slot="props">
                                 {{ props.row.remarks }}
                             </b-table-column>
 

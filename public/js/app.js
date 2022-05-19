@@ -9195,27 +9195,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -9455,17 +9434,9 @@ __webpack_require__.r(__webpack_exports__);
           });
         });
       });
-    },
-    loadOffices: function loadOffices() {
-      var _this9 = this;
-
-      axios.get('/get-user-offices').then(function (res) {
-        _this9.offices = res.data;
-      });
     }
   },
   mounted: function mounted() {
-    this.loadOffices();
     this.loadAsyncData();
     this.loadProvince();
   }
@@ -31703,7 +31674,7 @@ var render = function () {
                     }),
                     _vm._v(" "),
                     _c("b-table-column", {
-                      attrs: { field: "remarks", label: "Active" },
+                      attrs: { field: "remarks", label: "Remarks" },
                       scopedSlots: _vm._u([
                         {
                           key: "default",
@@ -34142,8 +34113,8 @@ var render = function () {
                                     _vm._v("ADMINISTRATOR"),
                                   ]),
                                   _vm._v(" "),
-                                  _c("option", { attrs: { value: "OFFICE" } }, [
-                                    _vm._v("OFFICE"),
+                                  _c("option", { attrs: { value: "STAFF" } }, [
+                                    _vm._v("STAFF"),
                                   ]),
                                   _vm._v(" "),
                                   _c("option", { attrs: { value: "USER" } }, [
@@ -34151,94 +34122,6 @@ var render = function () {
                                   ]),
                                 ]
                               ),
-                            ],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "columns" }, [
-                      _vm.fields.role === "OFFICE"
-                        ? _c(
-                            "div",
-                            { staticClass: "column" },
-                            [
-                              _c(
-                                "b-field",
-                                {
-                                  attrs: {
-                                    label: "Office",
-                                    "label-position": "on-border",
-                                    expanded: "",
-                                    type: this.errors.office ? "is-danger" : "",
-                                    message: this.errors.office
-                                      ? this.errors.office[0]
-                                      : "",
-                                  },
-                                },
-                                [
-                                  _c(
-                                    "b-select",
-                                    {
-                                      attrs: { expanded: "" },
-                                      model: {
-                                        value: _vm.fields.office,
-                                        callback: function ($$v) {
-                                          _vm.$set(_vm.fields, "office", $$v)
-                                        },
-                                        expression: "fields.office",
-                                      },
-                                    },
-                                    _vm._l(_vm.offices, function (item, index) {
-                                      return _c(
-                                        "option",
-                                        {
-                                          key: index,
-                                          domProps: { value: item.office_id },
-                                        },
-                                        [_vm._v(_vm._s(item.office_name))]
-                                      )
-                                    }),
-                                    0
-                                  ),
-                                ],
-                                1
-                              ),
-                            ],
-                            1
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "column" },
-                        [
-                          _c(
-                            "b-field",
-                            {
-                              attrs: {
-                                label: "Remark",
-                                "label-position": "on-border",
-                                expanded: "",
-                                type: this.errors.remark ? "is-danger" : "",
-                                message: this.errors.remark
-                                  ? this.errors.remark[0]
-                                  : "",
-                              },
-                            },
-                            [
-                              _c("b-input", {
-                                attrs: { type: "text", expanded: "" },
-                                model: {
-                                  value: _vm.fields.remark,
-                                  callback: function ($$v) {
-                                    _vm.$set(_vm.fields, "remark", $$v)
-                                  },
-                                  expression: "fields.remark",
-                                },
-                              }),
                             ],
                             1
                           ),

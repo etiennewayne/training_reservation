@@ -29,9 +29,7 @@ class UserSeeder extends Seeder
                 'street' => 'P-6',
                 'email' => 'angel@dev.com',
                 'contact_no' => '09167789585',
-                'role' => 'staff',
-                'office_id' => 0,
-                'remark' => '',
+                'role' => 'STAFF',
                 'password' => Hash::make('a')
             ],
             [
@@ -48,8 +46,6 @@ class UserSeeder extends Seeder
                 'email' => 'riche@dev.com',
                 'contact_no' => '09167789584',
                 'role' => 'USER',
-                'office_id' => 0,
-                'remark' => '',
                 'password' => Hash::make('a')
             ],
             [
@@ -66,8 +62,6 @@ class UserSeeder extends Seeder
                 'email' => 'admin@dev.com',
                 'contact_no' => '09167789584',
                 'role' => 'ADMINISTRATOR',
-                'office_id' => 0,
-                'remark' => '',
                 'password' => Hash::make('a')
             ],
 
