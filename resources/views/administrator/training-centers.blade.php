@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <office-page></office-page>
+    <training-center></training-center>
 @endsection
 

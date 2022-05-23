@@ -134,7 +134,7 @@
                             </div>
 
                             <div class="buttons is-right">
-                                <button class="button is-success">Register</button>
+                                <button class="button is-info">Register</button>
                             </div>
 
                         </div> <!--panel -body-->
@@ -208,7 +208,7 @@ export default {
 
 
     .panel > .panel-heading{
-        background-color: #4a5568;
+        background-color: #0551b0;
         color:white;
     }
 

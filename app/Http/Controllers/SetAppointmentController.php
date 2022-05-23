@@ -29,6 +29,7 @@ class SetAppointmentController extends Controller
         Appointment::create([
             'ref_no' => $refcode,
             'appointment_user_id' => $user->user_id,
+            'training_center_id' => $req->training_center,
             'app_date' => $ndate,
             'app_time' => $ntime,
             'app_status' => 0,

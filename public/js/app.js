@@ -7583,10 +7583,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var _methods;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -7765,7 +7772,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "AppointmentType",
   data: function data() {
     return {
       data: [],
@@ -7797,7 +7803,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
-  methods: (_methods = {
+  methods: {
     /*
     * Load async data
     */
@@ -7875,7 +7881,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     deleteSubmit: function deleteSubmit(delete_id) {
       var _this3 = this;
 
-      axios["delete"]('/appointment-type/' + delete_id).then(function (res) {
+      axios["delete"]('/appointments/' + delete_id).then(function (res) {
         _this3.loadAsyncData();
       })["catch"](function (err) {
         if (err.response.status === 422) {
@@ -7891,73 +7897,112 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.global_id = data_id;
       this.isModalCreate = true; //nested axios for getting the address 1 by 1 or request by request
 
-      axios.get('/appointment-type/' + data_id).then(function (res) {
-        _this4.fields = res.data[0];
+      axios.get('/appointments/' + data_id).then(function (res) {
+        _this4.fields.training_center = res.data.training_center_id;
+        var dateNTime = res.data.app_date + ' ' + res.data.app_time;
+        _this4.fields.appointment_date = new Date(dateNTime);
+        _this4.fields.remarks = res.data.remarks;
       });
-    }
-  }, _defineProperty(_methods, "clearFields", function clearFields() {
-    this.fields = {
-      appointment_type: ''
-    };
-  }), _defineProperty(_methods, "submit", function submit() {
-    var _this5 = this;
+    },
+    submit: function submit() {
+      var _this5 = this;
 
-    if (this.global_id > 0) {
-      //update
-      axios.put('/appointment-type/' + this.global_id, this.fields).then(function (res) {
-        if (res.data.status === 'updated') {
-          _this5.$buefy.dialog.alert({
-            title: 'UPDATED!',
-            message: 'Successfully updated.',
-            type: 'is-success',
-            onConfirm: function onConfirm() {
-              _this5.loadAsyncData();
+      this.fields.app_date = new Date(this.fields.appointment_date).toLocaleDateString();
+      this.fields.app_time = new Date(this.fields.appointment_date).toLocaleTimeString();
 
-              _this5.clearFields();
+      if (this.global_id > 0) {
+        //update
+        axios.put('/appointments/' + this.global_id, this.fields).then(function (res) {
+          if (res.data.status === 'updated') {
+            _this5.$buefy.dialog.alert({
+              title: 'UPDATED!',
+              message: 'Successfully updated.',
+              type: 'is-success',
+              onConfirm: function onConfirm() {
+                _this5.loadAsyncData();
 
-              _this5.global_id = 0;
-              _this5.isModalCreate = false;
-            }
-          });
-        }
-      })["catch"](function (err) {
-        if (err.response.status === 422) {
-          _this5.errors = err.response.data.errors;
+                _this5.clearFields();
+
+                _this5.global_id = 0;
+                _this5.isModalCreate = false;
+              }
+            });
+          }
+        })["catch"](function (err) {
+          if (err.response.status === 422) {
+            _this5.errors = err.response.data.errors;
+          }
+        });
+      } else {
+        //INSERT HERE
+        axios.post('/appointments', this.fields).then(function (res) {
+          if (res.data.status === 'saved') {
+            _this5.$buefy.dialog.alert({
+              title: 'SAVED!',
+              message: 'Successfully saved.',
+              type: 'is-success',
+              confirmText: 'OK',
+              onConfirm: function onConfirm() {
+                _this5.isModalCreate = false;
+
+                _this5.loadAsyncData();
+
+                _this5.clearFields();
+
+                _this5.global_id = 0;
+              }
+            });
+          }
+        })["catch"](function (err) {
+          if (err.response.status === 422) {
+            _this5.errors = err.response.data.errors;
+          }
+        });
+      }
+    },
+    confirmApproveAppointment: function confirmApproveAppointment(delete_id) {
+      var _this6 = this;
+
+      this.$buefy.dialog.confirm({
+        title: 'APPROVED!',
+        type: 'is-info',
+        message: 'Are you sure you want to approve this appointment?',
+        cancelText: 'Cancel',
+        confirmText: 'Approve',
+        onConfirm: function onConfirm() {
+          return _this6.approvedAppointment(delete_id);
         }
       });
-    } else {
-      //INSERT HERE
-      axios.post('/appointment-type', this.fields).then(function (res) {
-        if (res.data.status === 'saved') {
-          _this5.$buefy.dialog.alert({
-            title: 'SAVED!',
-            message: 'Successfully saved.',
+    },
+    approvedAppointment: function approvedAppointment(dataId) {
+      var _this7 = this;
+
+      axios.post('/appointment-approved/' + dataId).then(function (res) {
+        if (res.data.status === 'approved') {
+          _this7.$buefy.dialog.alert({
+            title: 'APPROVED!',
+            message: 'Successfully approved.',
             type: 'is-success',
             confirmText: 'OK',
             onConfirm: function onConfirm() {
-              _this5.isModalCreate = false;
+              _this7.loadAsyncData();
 
-              _this5.loadAsyncData();
+              _this7.clearFields();
 
-              _this5.clearFields();
-
-              _this5.global_id = 0;
+              _this7.global_id = 0;
             }
           });
         }
-      })["catch"](function (err) {
-        if (err.response.status === 422) {
-          _this5.errors = err.response.data.errors;
-        }
+      });
+    },
+    loadTrainingCenter: function loadTrainingCenter() {
+      var _this8 = this;
+
+      axios.get('/get-open-training-centers').then(function (res) {
+        _this8.trainingCenters = res.data;
       });
     }
-  }), _defineProperty(_methods, "loadTrainingCenter", function loadTrainingCenter() {
-    var _this6 = this;
-
-    axios.get('/get-open-training-centers').then(function (res) {
-      _this6.trainingCenters = res.data;
-    });
-  }), _methods),
+  },
   mounted: function mounted() {
     this.loadAsyncData();
     this.loadTrainingCenter();
@@ -8010,6 +8055,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
 //
 //
 //
@@ -8884,6 +8931,360 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      data: [],
+      total: 0,
+      loading: false,
+      sortField: 'training_center_id',
+      sortOrder: 'desc',
+      page: 1,
+      perPage: 5,
+      defaultSortDirection: 'asc',
+      global_id: 0,
+      search: {
+        training_center: ''
+      },
+      isModalCreate: false,
+      fields: {},
+      errors: {},
+      offices: [],
+      btnClass: {
+        'is-success': true,
+        'button': true,
+        'is-loading': false
+      }
+    };
+  },
+  methods: {
+    /*
+    * Load async data
+    */
+    loadAsyncData: function loadAsyncData() {
+      var _this = this;
+
+      var params = ["sort_by=".concat(this.sortField, ".").concat(this.sortOrder), "ordinance=".concat(this.search.training_center), "perpage=".concat(this.perPage), "page=".concat(this.page)].join('&');
+      this.loading = true;
+      axios.get("/get-training-centers?".concat(params)).then(function (_ref) {
+        var data = _ref.data;
+        _this.data = [];
+        var currentTotal = data.total;
+
+        if (data.total / _this.perPage > 1000) {
+          currentTotal = _this.perPage * 1000;
+        }
+
+        _this.total = currentTotal;
+        data.data.forEach(function (item) {
+          //item.release_date = item.release_date ? item.release_date.replace(/-/g, '/') : null
+          _this.data.push(item);
+        });
+        _this.loading = false;
+      })["catch"](function (error) {
+        _this.data = [];
+        _this.total = 0;
+        _this.loading = false;
+        throw error;
+      });
+    },
+
+    /*
+    * Handle page-change event
+    */
+    onPageChange: function onPageChange(page) {
+      this.page = page;
+      this.loadAsyncData();
+    },
+    onSort: function onSort(field, order) {
+      this.sortField = field;
+      this.sortOrder = order;
+      this.loadAsyncData();
+    },
+    setPerPage: function setPerPage() {
+      this.loadAsyncData();
+    },
+    openModal: function openModal() {
+      this.isModalCreate = true;
+      this.fields = {};
+      this.errors = {};
+    },
+    //alert box ask for deletion
+    confirmDelete: function confirmDelete(delete_id) {
+      var _this2 = this;
+
+      this.$buefy.dialog.confirm({
+        title: 'DELETE!',
+        type: 'is-danger',
+        message: 'Are you sure you want to delete this data?',
+        cancelText: 'Cancel',
+        confirmText: 'Delete',
+        onConfirm: function onConfirm() {
+          return _this2.deleteSubmit(delete_id);
+        }
+      });
+    },
+    //execute delete after confirming
+    deleteSubmit: function deleteSubmit(delete_id) {
+      var _this3 = this;
+
+      axios["delete"]('/training-centers/' + delete_id).then(function (res) {
+        _this3.loadAsyncData();
+      })["catch"](function (err) {
+        if (err.response.status === 422) {
+          _this3.errors = err.response.data.errors;
+        }
+      });
+    },
+    //update code here
+    getData: function getData(data_id) {
+      var _this4 = this;
+
+      this.clearFields();
+      this.global_id = data_id;
+      this.isModalCreate = true; //nested axios for getting the address 1 by 1 or request by request
+
+      axios.get('/training-centers/' + data_id).then(function (res) {
+        _this4.fields = res.data;
+      });
+    },
+    clearFields: function clearFields() {
+      this.fields = {
+        training_center: null,
+        address: null
+      };
+    },
+    submit: function submit() {
+      var _this5 = this;
+
+      if (this.global_id > 0) {
+        //INSERT HERE
+        axios.put('/training-centers/' + this.global_id, this.fields).then(function (res) {
+          if (res.data.status === 'updated') {
+            _this5.$buefy.dialog.alert({
+              title: 'UPDATED!',
+              message: 'Successfully updated.',
+              type: 'is-success',
+              confirmText: 'OK',
+              onConfirm: function onConfirm() {
+                _this5.isModalCreate = false;
+
+                _this5.loadAsyncData();
+
+                _this5.clearFields();
+
+                _this5.global_id = 0;
+              }
+            });
+          }
+        })["catch"](function (err) {
+          if (err.response.status === 422) {
+            _this5.errors = err.response.data.errors;
+          }
+        });
+      } else {
+        //INSERT HERE
+        axios.post('/training-centers', this.fields).then(function (res) {
+          if (res.data.status === 'saved') {
+            _this5.$buefy.dialog.alert({
+              title: 'SAVED!',
+              message: 'Successfully saved.',
+              type: 'is-success',
+              confirmText: 'OK',
+              onConfirm: function onConfirm() {
+                _this5.isModalCreate = false;
+
+                _this5.loadAsyncData();
+
+                _this5.clearFields();
+
+                _this5.global_id = 0;
+              }
+            });
+          }
+        })["catch"](function (err) {
+          if (err.response.status === 422) {
+            _this5.errors = err.response.data.errors;
+          }
+        });
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.loadAsyncData();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/User/UserPage.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/User/UserPage.vue?vue&type=script&lang=js& ***!
@@ -9554,8 +9955,8 @@ __webpack_require__.r(__webpack_exports__);
           window.location = '/';
         }
 
-        if (res.data.role === 'ADMINISTRATOR') {
-          window.location = '/admin-dashboard';
+        if (res.data.role === 'ADMINISTRATOR' || res.data.role === 'STAFF') {
+          window.location = '/cpanel';
         } // window.location = '/dashboard';
 
       });
@@ -9666,6 +10067,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
 //
 //
 //
@@ -10086,6 +10488,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
 //
 //
 //
@@ -28985,6 +29392,30 @@ var Plugin = {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.approved[data-v-e131ac5c]{\n    font-weight: bold;\n    color: green;\n}\n.cancelled[data-v-e131ac5c]{\n    font-weight: bold;\n    color: red;\n}\n.pending[data-v-e131ac5c]{\n    font-weight: bold;\n    color: #1a73bd;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Cpanel.vue?vue&type=style&index=0&lang=css&":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Cpanel.vue?vue&type=style&index=0&lang=css& ***!
@@ -29122,7 +29553,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.panel > .panel-heading[data-v-e902aeac]{\n        background-color: #4a5568;\n        color:white;\n}\n\n/*    dere lang kubia ang panel color*/\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.panel > .panel-heading[data-v-e902aeac]{\n        background-color: #0551b0;\n        color:white;\n}\n\n/*    dere lang kubia ang panel color*/\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -29457,6 +29888,36 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Appointment_vue_vue_type_style_index_0_id_e131ac5c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Appointment_vue_vue_type_style_index_0_id_e131ac5c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Appointment_vue_vue_type_style_index_0_id_e131ac5c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -29992,15 +30453,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Appointment_vue_vue_type_template_id_e131ac5c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Appointment.vue?vue&type=template&id=e131ac5c&scoped=true& */ "./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=template&id=e131ac5c&scoped=true&");
 /* harmony import */ var _Appointment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Appointment.vue?vue&type=script&lang=js& */ "./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _Appointment_vue_vue_type_style_index_0_id_e131ac5c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& */ "./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _Appointment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Appointment_vue_vue_type_template_id_e131ac5c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
   _Appointment_vue_vue_type_template_id_e131ac5c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -30213,6 +30676,45 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/components/Administrator/Report/ReportTrack.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true& */ "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true&");
+/* harmony import */ var _TrainingCenter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TrainingCenter.vue?vue&type=script&lang=js& */ "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TrainingCenter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "819d829c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -30791,6 +31293,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************!*\
+  !*** ./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingCenter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingCenter.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingCenter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Administrator/User/UserPage.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************!*\
   !*** ./resources/js/components/Administrator/User/UserPage.vue?vue&type=script&lang=js& ***!
@@ -30964,6 +31482,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Welcome.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Welcome.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&":
+/*!************************************************************************************************************************************!*\
+  !*** ./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& ***!
+  \************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Appointment_vue_vue_type_style_index_0_id_e131ac5c_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Appointment/Appointment.vue?vue&type=style&index=0&id=e131ac5c&scoped=true&lang=css&");
+
 
 /***/ }),
 
@@ -31169,6 +31700,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportTrack_vue_vue_type_template_id_02e05c09_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportTrack_vue_vue_type_template_id_02e05c09_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ReportTrack.vue?vue&type=template&id=02e05c09&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/Report/ReportTrack.vue?vue&type=template&id=02e05c09&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true&":
+/*!****************************************************************************************************************************!*\
+  !*** ./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true& ***!
+  \****************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingCenter_vue_vue_type_template_id_819d829c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true&");
 
 
 /***/ }),
@@ -31397,82 +31945,152 @@ var render = function () {
     "div",
     [
       _c("div", { staticClass: "section" }, [
-        _c("div", { staticClass: "columns" }, [
-          _c("div", { staticClass: "column is-8 is-offset-2" }, [
-            _c(
-              "div",
-              { staticClass: "box" },
-              [
+        _c("div", { staticClass: "columns is-centered" }, [
+          _c("div", { staticClass: "column is-10" }, [
+            _c("div", { staticClass: "box" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "is-flex is-justify-content-center mb-2",
+                  staticStyle: { "font-size": "20px", "font-weight": "bold" },
+                },
+                [_vm._v("LIST OF APPOINTMENT")]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "level" }, [
                 _c(
                   "div",
-                  {
-                    staticClass: "is-flex is-justify-content-center mb-2",
-                    staticStyle: { "font-size": "20px", "font-weight": "bold" },
-                  },
-                  [_vm._v("LIST OF APPOINTMENT")]
+                  { staticClass: "level-left" },
+                  [
+                    _c(
+                      "b-field",
+                      { attrs: { label: "Page" } },
+                      [
+                        _c(
+                          "b-select",
+                          {
+                            on: { input: _vm.setPerPage },
+                            model: {
+                              value: _vm.perPage,
+                              callback: function ($$v) {
+                                _vm.perPage = $$v
+                              },
+                              expression: "perPage",
+                            },
+                          },
+                          [
+                            _c("option", { attrs: { value: "5" } }, [
+                              _vm._v("5 per page"),
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "10" } }, [
+                              _vm._v("10 per page"),
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "15" } }, [
+                              _vm._v("15 per page"),
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "20" } }, [
+                              _vm._v("20 per page"),
+                            ]),
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-select",
+                          {
+                            on: { input: _vm.loadAsyncData },
+                            model: {
+                              value: _vm.sortOrder,
+                              callback: function ($$v) {
+                                _vm.sortOrder = $$v
+                              },
+                              expression: "sortOrder",
+                            },
+                          },
+                          [
+                            _c("option", { attrs: { value: "asc" } }, [
+                              _vm._v("ASC"),
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "desc" } }, [
+                              _vm._v("DESC"),
+                            ]),
+                          ]
+                        ),
+                      ],
+                      1
+                    ),
+                  ],
+                  1
                 ),
                 _vm._v(" "),
-                _c("div", { staticClass: "level" }, [
+                _c("div", { staticClass: "level-right" }, [
                   _c(
                     "div",
-                    { staticClass: "level-left" },
+                    { staticClass: "level-item" },
                     [
                       _c(
                         "b-field",
-                        { attrs: { label: "Page" } },
+                        { attrs: { label: "Search" } },
                         [
-                          _c(
-                            "b-select",
-                            {
-                              on: { input: _vm.setPerPage },
-                              model: {
-                                value: _vm.perPage,
-                                callback: function ($$v) {
-                                  _vm.perPage = $$v
-                                },
-                                expression: "perPage",
+                          _c("b-input", {
+                            attrs: {
+                              type: "text",
+                              placeholder: "Search Appointment",
+                            },
+                            nativeOn: {
+                              keyup: function ($event) {
+                                if (
+                                  !$event.type.indexOf("key") &&
+                                  _vm._k(
+                                    $event.keyCode,
+                                    "enter",
+                                    13,
+                                    $event.key,
+                                    "Enter"
+                                  )
+                                ) {
+                                  return null
+                                }
+                                return _vm.loadAsyncData.apply(null, arguments)
                               },
                             },
-                            [
-                              _c("option", { attrs: { value: "5" } }, [
-                                _vm._v("5 per page"),
-                              ]),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "10" } }, [
-                                _vm._v("10 per page"),
-                              ]),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "15" } }, [
-                                _vm._v("15 per page"),
-                              ]),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "20" } }, [
-                                _vm._v("20 per page"),
-                              ]),
-                            ]
-                          ),
+                            model: {
+                              value: _vm.search.app_date,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.search, "app_date", $$v)
+                              },
+                              expression: "search.app_date",
+                            },
+                          }),
                           _vm._v(" "),
                           _c(
-                            "b-select",
-                            {
-                              on: { input: _vm.loadAsyncData },
-                              model: {
-                                value: _vm.sortOrder,
-                                callback: function ($$v) {
-                                  _vm.sortOrder = $$v
-                                },
-                                expression: "sortOrder",
-                              },
-                            },
+                            "p",
+                            { staticClass: "control" },
                             [
-                              _c("option", { attrs: { value: "asc" } }, [
-                                _vm._v("ASC"),
-                              ]),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "desc" } }, [
-                                _vm._v("DESC"),
-                              ]),
-                            ]
+                              _c(
+                                "b-tooltip",
+                                {
+                                  attrs: {
+                                    label: "Search",
+                                    type: "is-success",
+                                  },
+                                },
+                                [
+                                  _c("b-button", {
+                                    attrs: {
+                                      type: "is-primary",
+                                      "icon-right": "account-filter",
+                                    },
+                                    on: { click: _vm.loadAsyncData },
+                                  }),
+                                ],
+                                1
+                              ),
+                            ],
+                            1
                           ),
                         ],
                         1
@@ -31480,311 +32098,296 @@ var render = function () {
                     ],
                     1
                   ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "level-right" }, [
-                    _c(
-                      "div",
-                      { staticClass: "level-item" },
-                      [
-                        _c(
-                          "b-field",
-                          { attrs: { label: "Search" } },
-                          [
-                            _c("b-input", {
-                              attrs: {
-                                type: "text",
-                                placeholder: "Search Appointment",
-                              },
-                              nativeOn: {
-                                keyup: function ($event) {
-                                  if (
-                                    !$event.type.indexOf("key") &&
-                                    _vm._k(
-                                      $event.keyCode,
-                                      "enter",
-                                      13,
-                                      $event.key,
-                                      "Enter"
-                                    )
-                                  ) {
-                                    return null
-                                  }
-                                  return _vm.loadAsyncData.apply(
-                                    null,
-                                    arguments
-                                  )
-                                },
-                              },
-                              model: {
-                                value: _vm.search.app_date,
-                                callback: function ($$v) {
-                                  _vm.$set(_vm.search, "app_date", $$v)
-                                },
-                                expression: "search.app_date",
-                              },
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "p",
-                              { staticClass: "control" },
-                              [
+                ]),
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "table-container" },
+                [
+                  _c(
+                    "b-table",
+                    {
+                      attrs: {
+                        data: _vm.data,
+                        loading: _vm.loading,
+                        paginated: "",
+                        "backend-pagination": "",
+                        total: _vm.total,
+                        "per-page": _vm.perPage,
+                        "aria-next-label": "Next page",
+                        "aria-previous-label": "Previous page",
+                        "aria-page-label": "Page",
+                        "aria-current-label": "Current page",
+                        "backend-sorting": "",
+                        "default-sort-direction": _vm.defaultSortDirection,
+                      },
+                      on: { "page-change": _vm.onPageChange, sort: _vm.onSort },
+                    },
+                    [
+                      _c("b-table-column", {
+                        attrs: { field: "appointment_id", label: "ID" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(props.row.appointment_id) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "ref_no", label: "Reference No." },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(props.row.ref_no) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: {
+                          field: "training_center",
+                          label: "Training Center",
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(
+                                      props.row.training_center.training_center
+                                    ) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "fullname", label: "Appointee" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(props.row.user.lname) +
+                                    ", " +
+                                    _vm._s(props.row.user.fname) +
+                                    " " +
+                                    _vm._s(props.row.user.mname) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "app_date", label: "Appointment Date" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(props.row.app_date) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "app_time", label: "Appointment Time" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(
+                                      props.row.app_time || _vm.formatTime
+                                    ) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "app_status", label: "Remarks" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                props.row.app_status === 0
+                                  ? _c("span", { staticClass: "pending" }, [
+                                      _vm._v("PENDING"),
+                                    ])
+                                  : props.row.app_status === 1
+                                  ? _c("span", { staticClass: "approved" }, [
+                                      _vm._v("APPROVED"),
+                                    ])
+                                  : _c("span", { staticClass: "cancelled" }, [
+                                      _vm._v("CANCELLED"),
+                                    ]),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "remarks", label: "Remarks" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(props.row.remarks) +
+                                    "\n                            "
+                                ),
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { label: "Action" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "default",
+                            fn: function (props) {
+                              return [
                                 _c(
-                                  "b-tooltip",
-                                  {
-                                    attrs: {
-                                      label: "Search",
-                                      type: "is-success",
-                                    },
-                                  },
+                                  "div",
+                                  { staticClass: "is-flex" },
                                   [
-                                    _c("b-button", {
-                                      attrs: {
-                                        type: "is-primary",
-                                        "icon-right": "account-filter",
+                                    _c(
+                                      "b-tooltip",
+                                      {
+                                        attrs: {
+                                          label: "Edit",
+                                          type: "is-warning",
+                                        },
                                       },
-                                      on: { click: _vm.loadAsyncData },
-                                    }),
+                                      [
+                                        props.row.app_status === 0
+                                          ? _c("b-button", {
+                                              staticClass:
+                                                "button is-small is-warning mr-1",
+                                              attrs: {
+                                                tag: "a",
+                                                "icon-right": "pencil",
+                                              },
+                                              on: {
+                                                click: function ($event) {
+                                                  return _vm.getData(
+                                                    props.row.appointment_id
+                                                  )
+                                                },
+                                              },
+                                            })
+                                          : _vm._e(),
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-tooltip",
+                                      {
+                                        attrs: {
+                                          label: "Approve",
+                                          type: "is-info",
+                                        },
+                                      },
+                                      [
+                                        props.row.app_status === 0
+                                          ? _c("b-button", {
+                                              staticClass:
+                                                "button is-small is-info mr-1",
+                                              attrs: {
+                                                "icon-right":
+                                                  "thumb-up-outline",
+                                              },
+                                              on: {
+                                                click: function ($event) {
+                                                  return _vm.confirmApproveAppointment(
+                                                    props.row.appointment_id
+                                                  )
+                                                },
+                                              },
+                                            })
+                                          : _vm._e(),
+                                      ],
+                                      1
+                                    ),
                                   ],
                                   1
                                 ),
-                              ],
-                              1
-                            ),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c(
-                  "b-table",
-                  {
-                    attrs: {
-                      data: _vm.data,
-                      loading: _vm.loading,
-                      paginated: "",
-                      "backend-pagination": "",
-                      total: _vm.total,
-                      "per-page": _vm.perPage,
-                      "aria-next-label": "Next page",
-                      "aria-previous-label": "Previous page",
-                      "aria-page-label": "Page",
-                      "aria-current-label": "Current page",
-                      "backend-sorting": "",
-                      "default-sort-direction": _vm.defaultSortDirection,
+                              ]
+                            },
+                          },
+                        ]),
+                      }),
+                    ],
+                    1
+                  ),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "buttons mt-3" },
+                [
+                  _c(
+                    "b-button",
+                    {
+                      staticClass: "is-success",
+                      attrs: { "icon-right": "account-arrow-up-outline" },
+                      on: { click: _vm.openModal },
                     },
-                    on: { "page-change": _vm.onPageChange, sort: _vm.onSort },
-                  },
-                  [
-                    _c("b-table-column", {
-                      attrs: { field: "appointment_id", label: "ID" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.appointment_id) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "ref_no", label: "Reference No." },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.ref_no) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "fullname", label: "Appointee" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.user.lname) +
-                                  ", " +
-                                  _vm._s(props.row.user.fname) +
-                                  " " +
-                                  _vm._s(props.row.user.mname) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "app_date", label: "Appointment Date" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.app_date) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "app_time", label: "Appointment Time" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.app_time) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "remarks", label: "Remarks" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(props.row.remarks) +
-                                  "\n                        "
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { label: "Action" },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "default",
-                          fn: function (props) {
-                            return [
-                              _c(
-                                "div",
-                                { staticClass: "is-flex" },
-                                [
-                                  _c(
-                                    "b-tooltip",
-                                    {
-                                      attrs: {
-                                        label: "Edit",
-                                        type: "is-warning",
-                                      },
-                                    },
-                                    [
-                                      _c("b-button", {
-                                        staticClass:
-                                          "button is-small is-warning mr-1",
-                                        attrs: {
-                                          tag: "a",
-                                          "icon-right": "pencil",
-                                        },
-                                        on: {
-                                          click: function ($event) {
-                                            return _vm.getData(
-                                              props.row.appointment_type_id
-                                            )
-                                          },
-                                        },
-                                      }),
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "b-tooltip",
-                                    {
-                                      attrs: {
-                                        label: "Delete",
-                                        type: "is-danger",
-                                      },
-                                    },
-                                    [
-                                      _c("b-button", {
-                                        staticClass:
-                                          "button is-small is-danger mr-1",
-                                        attrs: { "icon-right": "delete" },
-                                        on: {
-                                          click: function ($event) {
-                                            return _vm.confirmDelete(
-                                              props.row.appointment_type_id
-                                            )
-                                          },
-                                        },
-                                      }),
-                                    ],
-                                    1
-                                  ),
-                                ],
-                                1
-                              ),
-                            ]
-                          },
-                        },
-                      ]),
-                    }),
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "buttons mt-3" },
-                  [
-                    _c(
-                      "b-button",
-                      {
-                        staticClass: "is-success",
-                        attrs: { "icon-right": "account-arrow-up-outline" },
-                        on: { click: _vm.openModal },
-                      },
-                      [_vm._v("NEW")]
-                    ),
-                  ],
-                  1
-                ),
-              ],
-              1
-            ),
+                    [_vm._v("NEW")]
+                  ),
+                ],
+                1
+              ),
+            ]),
           ]),
         ]),
       ]),
@@ -31839,109 +32442,115 @@ var render = function () {
                 ]),
                 _vm._v(" "),
                 _c("section", { staticClass: "modal-card-body" }, [
-                  _c("div", {}, [
-                    _c("div", { staticClass: "columns" }, [
+                  _c(
+                    "div",
+                    {},
+                    [
                       _c(
-                        "div",
-                        { staticClass: "column" },
+                        "b-field",
+                        {
+                          staticClass: "is-centered",
+                          attrs: {
+                            label: "SELECT DATE",
+                            grouped: "",
+                            expanded: "",
+                            "label-position": "on-border",
+                            type: this.errors.appointment ? "is-danger" : "",
+                            message: this.errors.appointment
+                              ? this.errors.appointment[0]
+                              : "",
+                          },
+                        },
                         [
-                          _c(
-                            "b-field",
-                            {
-                              attrs: {
-                                label: "Appointment Type",
-                                type: this.errors.appointment
-                                  ? "is-danger"
-                                  : "",
-                                message: this.errors.appointment
-                                  ? this.errors.appointment[0]
-                                  : "",
-                              },
+                          _c("b-datetimepicker", {
+                            attrs: {
+                              rounded: "",
+                              expanded: "",
+                              placeholder: "Type or select a date...",
+                              icon: "calendar-today",
+                              locale: _vm.locale,
+                              editable: "",
                             },
-                            [
-                              _c("b-datetimepicker", {
-                                attrs: {
-                                  placeholder: "Appointment",
-                                  required: "",
-                                },
-                                model: {
-                                  value: _vm.fields.appointment,
-                                  callback: function ($$v) {
-                                    _vm.$set(_vm.fields, "appointment", $$v)
-                                  },
-                                  expression: "fields.appointment",
-                                },
-                              }),
-                            ],
-                            1
-                          ),
+                            model: {
+                              value: _vm.fields.appointment_date,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.fields, "appointment_date", $$v)
+                              },
+                              expression: "fields.appointment_date",
+                            },
+                          }),
                         ],
                         1
                       ),
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "columns" }, [
+                      _vm._v(" "),
                       _c(
-                        "div",
-                        { staticClass: "column" },
+                        "b-field",
+                        {
+                          attrs: {
+                            label: "TRAINING CENTER",
+                            expanded: "",
+                            "label-position": "on-border",
+                            type: _vm.errors.training_center ? "is-danger" : "",
+                            message: _vm.errors.training_center
+                              ? _vm.errors.training_center[0]
+                              : "",
+                          },
+                        },
                         [
                           _c(
-                            "b-field",
+                            "b-select",
                             {
-                              attrs: {
-                                label: "TRAINING CENTER",
-                                expanded: "",
-                                "label-position": "on-border",
-                                type: _vm.errors.training_center
-                                  ? "is-danger"
-                                  : "",
-                                message: _vm.errors.training_center
-                                  ? _vm.errors.training_center[0]
-                                  : "",
+                              attrs: { expanded: "", rounded: "" },
+                              model: {
+                                value: _vm.fields.training_center,
+                                callback: function ($$v) {
+                                  _vm.$set(_vm.fields, "training_center", $$v)
+                                },
+                                expression: "fields.training_center",
                               },
                             },
-                            [
-                              _c(
-                                "b-select",
+                            _vm._l(_vm.trainingCenters, function (item, index) {
+                              return _c(
+                                "option",
                                 {
-                                  attrs: { expanded: "", rounded: "" },
-                                  model: {
-                                    value: _vm.fields.training_center,
-                                    callback: function ($$v) {
-                                      _vm.$set(
-                                        _vm.fields,
-                                        "training_center",
-                                        $$v
-                                      )
-                                    },
-                                    expression: "fields.training_center",
-                                  },
+                                  key: index,
+                                  domProps: { value: item.training_center_id },
                                 },
-                                _vm._l(
-                                  _vm.trainingCenters,
-                                  function (item, index) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: index,
-                                        domProps: {
-                                          value: item.traning_center_id,
-                                        },
-                                      },
-                                      [_vm._v(_vm._s(item.training_center))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ],
-                            1
+                                [_vm._v(_vm._s(item.training_center))]
+                              )
+                            }),
+                            0
                           ),
                         ],
                         1
                       ),
-                    ]),
-                  ]),
+                      _vm._v(" "),
+                      _c(
+                        "b-field",
+                        {
+                          attrs: {
+                            label: "Remarks",
+                            expanded: "",
+                            "label-position": "on-border",
+                          },
+                        },
+                        [
+                          _c("b-input", {
+                            attrs: { type: "textarea", placeholder: "Remarks" },
+                            model: {
+                              value: _vm.fields.remarks,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.fields, "remarks", $$v)
+                              },
+                              expression: "fields.remarks",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                    ],
+                    1
+                  ),
                 ]),
                 _vm._v(" "),
                 _c(
@@ -32110,6 +32719,15 @@ var render = function () {
                           label: "Dashboard",
                           tag: "a",
                           href: "/cpanel",
+                        },
+                      }),
+                      _vm._v(" "),
+                      _c("b-menu-item", {
+                        attrs: {
+                          label: "Training Center",
+                          icon: "domain",
+                          tag: "a",
+                          href: "/training-centers",
                         },
                       }),
                       _vm._v(" "),
@@ -33243,6 +33861,519 @@ var staticRenderFns = [
     ])
   },
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue?vue&type=template&id=819d829c&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "section" }, [
+        _c("div", { staticClass: "columns is-centered" }, [
+          _c("div", { staticClass: "column is-6" }, [
+            _c(
+              "div",
+              { staticClass: "box" },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "is-flex is-justify-content-center mb-2",
+                    staticStyle: { "font-size": "20px", "font-weight": "bold" },
+                  },
+                  [_vm._v("TRAINING CENTERS")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "level" }, [
+                  _c(
+                    "div",
+                    { staticClass: "level-left" },
+                    [
+                      _c(
+                        "b-field",
+                        { attrs: { label: "Page" } },
+                        [
+                          _c(
+                            "b-select",
+                            {
+                              on: { input: _vm.setPerPage },
+                              model: {
+                                value: _vm.perPage,
+                                callback: function ($$v) {
+                                  _vm.perPage = $$v
+                                },
+                                expression: "perPage",
+                              },
+                            },
+                            [
+                              _c("option", { attrs: { value: "5" } }, [
+                                _vm._v("5 per page"),
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "10" } }, [
+                                _vm._v("10 per page"),
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "15" } }, [
+                                _vm._v("15 per page"),
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "20" } }, [
+                                _vm._v("20 per page"),
+                              ]),
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-select",
+                            {
+                              on: { input: _vm.loadAsyncData },
+                              model: {
+                                value: _vm.sortOrder,
+                                callback: function ($$v) {
+                                  _vm.sortOrder = $$v
+                                },
+                                expression: "sortOrder",
+                              },
+                            },
+                            [
+                              _c("option", { attrs: { value: "asc" } }, [
+                                _vm._v("ASC"),
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "desc" } }, [
+                                _vm._v("DESC"),
+                              ]),
+                            ]
+                          ),
+                        ],
+                        1
+                      ),
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "level-right" }, [
+                    _c(
+                      "div",
+                      { staticClass: "level-item" },
+                      [
+                        _c(
+                          "b-field",
+                          { attrs: { label: "Search" } },
+                          [
+                            _c("b-input", {
+                              attrs: {
+                                type: "text",
+                                placeholder: "Search Training Center",
+                              },
+                              nativeOn: {
+                                keyup: function ($event) {
+                                  if (
+                                    !$event.type.indexOf("key") &&
+                                    _vm._k(
+                                      $event.keyCode,
+                                      "enter",
+                                      13,
+                                      $event.key,
+                                      "Enter"
+                                    )
+                                  ) {
+                                    return null
+                                  }
+                                  return _vm.loadAsyncData.apply(
+                                    null,
+                                    arguments
+                                  )
+                                },
+                              },
+                              model: {
+                                value: _vm.search.training_center,
+                                callback: function ($$v) {
+                                  _vm.$set(_vm.search, "training_center", $$v)
+                                },
+                                expression: "search.training_center",
+                              },
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "p",
+                              { staticClass: "control" },
+                              [
+                                _c(
+                                  "b-tooltip",
+                                  {
+                                    attrs: {
+                                      label: "Search",
+                                      type: "is-success",
+                                    },
+                                  },
+                                  [
+                                    _c("b-button", {
+                                      attrs: {
+                                        type: "is-primary",
+                                        "icon-right": "account-filter",
+                                      },
+                                      on: { click: _vm.loadAsyncData },
+                                    }),
+                                  ],
+                                  1
+                                ),
+                              ],
+                              1
+                            ),
+                          ],
+                          1
+                        ),
+                      ],
+                      1
+                    ),
+                  ]),
+                ]),
+                _vm._v(" "),
+                _c(
+                  "b-table",
+                  {
+                    attrs: {
+                      data: _vm.data,
+                      loading: _vm.loading,
+                      paginated: "",
+                      "backend-pagination": "",
+                      total: _vm.total,
+                      "per-page": _vm.perPage,
+                      "aria-next-label": "Next page",
+                      "aria-previous-label": "Previous page",
+                      "aria-page-label": "Page",
+                      "aria-current-label": "Current page",
+                      "backend-sorting": "",
+                      "default-sort-direction": _vm.defaultSortDirection,
+                    },
+                    on: { "page-change": _vm.onPageChange, sort: _vm.onSort },
+                  },
+                  [
+                    _c("b-table-column", {
+                      attrs: { field: "training_center_id", label: "ID" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function (props) {
+                            return [
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(props.row.training_center_id) +
+                                  "\n                        "
+                              ),
+                            ]
+                          },
+                        },
+                      ]),
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "training_center",
+                        label: "Training Center",
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function (props) {
+                            return [
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(props.row.training_center) +
+                                  "\n                        "
+                              ),
+                            ]
+                          },
+                        },
+                      ]),
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { field: "address", label: "Address" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function (props) {
+                            return [
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(props.row.address) +
+                                  "\n                        "
+                              ),
+                            ]
+                          },
+                        },
+                      ]),
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { label: "Action" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function (props) {
+                            return [
+                              _c(
+                                "div",
+                                { staticClass: "is-flex" },
+                                [
+                                  _c(
+                                    "b-tooltip",
+                                    {
+                                      attrs: {
+                                        label: "Delete",
+                                        type: "is-danger",
+                                      },
+                                    },
+                                    [
+                                      _c("b-button", {
+                                        staticClass:
+                                          "button is-small is-warning mr-1",
+                                        attrs: { "icon-right": "pencil" },
+                                        on: {
+                                          click: function ($event) {
+                                            return _vm.getData(
+                                              props.row.training_center_id
+                                            )
+                                          },
+                                        },
+                                      }),
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "b-tooltip",
+                                    {
+                                      attrs: {
+                                        label: "Delete",
+                                        type: "is-danger",
+                                      },
+                                    },
+                                    [
+                                      _c("b-button", {
+                                        staticClass:
+                                          "button is-small is-danger mr-1",
+                                        attrs: { "icon-right": "delete" },
+                                        on: {
+                                          click: function ($event) {
+                                            return _vm.confirmDelete(
+                                              props.row.training_center_id
+                                            )
+                                          },
+                                        },
+                                      }),
+                                    ],
+                                    1
+                                  ),
+                                ],
+                                1
+                              ),
+                            ]
+                          },
+                        },
+                      ]),
+                    }),
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "buttons mt-3" },
+                  [
+                    _c(
+                      "b-button",
+                      {
+                        staticClass: "is-success",
+                        attrs: { "icon-right": "account-arrow-up-outline" },
+                        on: { click: _vm.openModal },
+                      },
+                      [_vm._v("NEW")]
+                    ),
+                  ],
+                  1
+                ),
+              ],
+              1
+            ),
+          ]),
+        ]),
+      ]),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            "has-modal-card": "",
+            "trap-focus": "",
+            width: 640,
+            "aria-role": "dialog",
+            "aria-label": "Modal",
+            "aria-modal": "",
+            type: "is-link",
+          },
+          model: {
+            value: _vm.isModalCreate,
+            callback: function ($$v) {
+              _vm.isModalCreate = $$v
+            },
+            expression: "isModalCreate",
+          },
+        },
+        [
+          _c(
+            "form",
+            {
+              on: {
+                submit: function ($event) {
+                  $event.preventDefault()
+                  return _vm.submit.apply(null, arguments)
+                },
+              },
+            },
+            [
+              _c("div", { staticClass: "modal-card" }, [
+                _c("header", { staticClass: "modal-card-head" }, [
+                  _c("p", { staticClass: "modal-card-title" }, [
+                    _vm._v("Training Center"),
+                  ]),
+                  _vm._v(" "),
+                  _c("button", {
+                    staticClass: "delete",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function ($event) {
+                        _vm.isModalCreate = false
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("section", { staticClass: "modal-card-body" }, [
+                  _c("div", {}, [
+                    _c("div", { staticClass: "columns" }, [
+                      _c(
+                        "div",
+                        { staticClass: "column" },
+                        [
+                          _c(
+                            "b-field",
+                            {
+                              attrs: {
+                                label: "Training Center",
+                                type: this.errors.training_center
+                                  ? "is-danger"
+                                  : "",
+                                message: this.errors.training_center
+                                  ? this.errors.training_center[0]
+                                  : "",
+                              },
+                            },
+                            [
+                              _c("b-input", {
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Ordinance Name",
+                                },
+                                model: {
+                                  value: _vm.fields.training_center,
+                                  callback: function ($$v) {
+                                    _vm.$set(_vm.fields, "training_center", $$v)
+                                  },
+                                  expression: "fields.training_center",
+                                },
+                              }),
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-field",
+                            {
+                              attrs: {
+                                label: "Training Center Address",
+                                type: this.errors.address ? "is-danger" : "",
+                                message: this.errors.address
+                                  ? this.errors.address[0]
+                                  : "",
+                              },
+                            },
+                            [
+                              _c("b-input", {
+                                attrs: { type: "text", placeholder: "Address" },
+                                model: {
+                                  value: _vm.fields.address,
+                                  callback: function ($$v) {
+                                    _vm.$set(_vm.fields, "address", $$v)
+                                  },
+                                  expression: "fields.address",
+                                },
+                              }),
+                            ],
+                            1
+                          ),
+                        ],
+                        1
+                      ),
+                    ]),
+                  ]),
+                ]),
+                _vm._v(" "),
+                _c(
+                  "footer",
+                  { staticClass: "modal-card-foot" },
+                  [
+                    _c("b-button", {
+                      attrs: { label: "Close" },
+                      on: {
+                        click: function ($event) {
+                          _vm.isModalCreate = false
+                        },
+                      },
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        class: _vm.btnClass,
+                        attrs: { label: "Save", type: "is-success" },
+                      },
+                      [_vm._v("SAVE")]
+                    ),
+                  ],
+                  1
+                ),
+              ]),
+            ]
+          ),
+        ]
+      ),
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -34786,7 +35917,7 @@ var render = function () {
                               "option",
                               {
                                 key: index,
-                                domProps: { value: item.traning_center_id },
+                                domProps: { value: item.training_center_id },
                               },
                               [_vm._v(_vm._s(item.training_center))]
                             )
@@ -35459,7 +36590,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "buttons is-right" }, [
-      _c("button", { staticClass: "button is-success" }, [_vm._v("Register")]),
+      _c("button", { staticClass: "button is-info" }, [_vm._v("Register")]),
     ])
   },
 ]
@@ -35781,6 +36912,29 @@ var render = function () {
                   }),
                   _vm._v(" "),
                   _c("b-table-column", {
+                    attrs: {
+                      field: "training_center",
+                      label: "Training Center",
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "default",
+                        fn: function (props) {
+                          return [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(
+                                  props.row.training_center.training_center
+                                ) +
+                                "\n                        "
+                            ),
+                          ]
+                        },
+                      },
+                    ]),
+                  }),
+                  _vm._v(" "),
+                  _c("b-table-column", {
                     attrs: { field: "app_date", label: "Appointment Date" },
                     scopedSlots: _vm._u([
                       {
@@ -35841,7 +36995,7 @@ var render = function () {
                         key: "default",
                         fn: function (props) {
                           return [
-                            props.row.is_approved === 1
+                            props.row.app_status === 1
                               ? _c(
                                   "span",
                                   {
@@ -35852,7 +37006,7 @@ var render = function () {
                                   },
                                   [_vm._v("APPROVED")]
                                 )
-                              : props.row.is_approved === 2
+                              : props.row.app_status === 2
                               ? _c(
                                   "span",
                                   {
@@ -35975,31 +37129,6 @@ var render = function () {
                 _c("h1", { staticClass: "title is-4" }, [_vm._v("MY PROFILE")]),
                 _vm._v(" "),
                 _c("div", { staticClass: "container" }, [
-                  _c("div", { staticClass: "columns is-centered" }, [
-                    _c("div", { staticClass: "column is-6" }, [
-                      _c("div", { staticClass: "qr-container" }, [
-                        _c("div", [
-                          _vm._v("QR CODE: " + _vm._s(_vm.fields.qr_ref)),
-                        ]),
-                        _vm._v(" "),
-                        _vm.fields.qr_ref
-                          ? _c(
-                              "div",
-                              [
-                                _c("qrcode", {
-                                  attrs: {
-                                    value: _vm.fields.qr_ref,
-                                    options: { width: 200 },
-                                  },
-                                }),
-                              ],
-                              1
-                            )
-                          : _vm._e(),
-                      ]),
-                    ]),
-                  ]),
-                  _vm._v(" "),
                   _c("div", { staticClass: "columns" }, [
                     _c(
                       "div",
@@ -60173,6 +61302,7 @@ var map = {
 	"./components/Administrator/Office/OfficePage.vue": "./resources/js/components/Administrator/Office/OfficePage.vue",
 	"./components/Administrator/Ordinance/Ordinance.vue": "./resources/js/components/Administrator/Ordinance/Ordinance.vue",
 	"./components/Administrator/Report/ReportTrack.vue": "./resources/js/components/Administrator/Report/ReportTrack.vue",
+	"./components/Administrator/TrainingCenter/TrainingCenter.vue": "./resources/js/components/Administrator/TrainingCenter/TrainingCenter.vue",
 	"./components/Administrator/User/UserPage.vue": "./resources/js/components/Administrator/User/UserPage.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
 	"./components/FooterComponent.vue": "./resources/js/components/FooterComponent.vue",

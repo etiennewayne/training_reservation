@@ -26,8 +26,6 @@ class MyAppointmentController extends Controller
     public function getMyAppointment(Request $req){
         $user =  Auth::user();
 
-
-
         $sort = explode('.', $req->sort_by);
 
         $date = $req->appdate;
@@ -38,7 +36,7 @@ class MyAppointmentController extends Controller
         }else{
             $ndate = '';
         }
-        return Appointment::with(['user'])
+        return Appointment::with(['user', 'training_center'])
             ->where('appointment_user_id', $user->user_id)
             ->where('app_date', 'like',  $ndate . '%')
             ->orderBy($sort[0], $sort[1])
@@ -64,7 +62,6 @@ class MyAppointmentController extends Controller
     }
 
     public function store(Request $req){
-
 
         $req->validate([
             'app_date' => ['required'],
@@ -145,7 +142,7 @@ class MyAppointmentController extends Controller
 
     public function cancelMyAppointment($id){
         $data = Appointment::find($id);
-        $data->is_approved = 2;
+        $data->app_status = 2;
         $data->save();
 
         return response()->json([

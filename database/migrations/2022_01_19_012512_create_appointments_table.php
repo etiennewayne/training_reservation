@@ -18,6 +18,11 @@ class CreateAppointmentsTable extends Migration
             $table->string('ref_no')->unique();
             $table->unsignedBigInteger('appointment_user_id');
             $table->foreign('appointment_user_id')->references('user_id')->on('users');
+
+            $table->unsignedBigInteger('training_center_id')->unique();
+            $table->foreign('training_center_id')->references('training_center_id')->on('training_centers');
+
+
             $table->date('app_date')->nullable();
             $table->time('app_time')->nullable();
             $table->text('remarks')->nullable();

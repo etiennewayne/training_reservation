@@ -46,8 +46,8 @@ export default {
                 if(res.data.role === 'USER'){
                     window.location = '/';
                 }
-                if(res.data.role === 'ADMINISTRATOR'){
-                    window.location = '/admin-dashboard';
+                if(res.data.role === 'ADMINISTRATOR' || res.data.role === 'STAFF'){
+                    window.location = '/cpanel';
                 }
                // window.location = '/dashboard';
             })

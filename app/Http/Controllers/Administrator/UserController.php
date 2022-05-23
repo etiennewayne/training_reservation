@@ -16,6 +16,8 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('admin');
+
     }
 
     public function index(){
@@ -44,12 +46,10 @@ class UserController extends Controller
             'username' => ['required', 'max:50', 'unique:users'],
             'lname' => ['required', 'string', 'max:100'],
             'fname' => ['required', 'string', 'max:100'],
-            'mname' => ['required', 'string', 'max:100'],
             'sex' => ['required', 'string', 'max:20'],
             'email' => ['required', 'unique:users'],
             'password' => ['required', 'string', 'confirmed'],
             'role' => ['required', 'string'],
-            'remark' => ['required', 'string'],
             'province' => ['required', 'string'],
             'city' => ['required', 'string'],
             'barangay' => ['required', 'string'],

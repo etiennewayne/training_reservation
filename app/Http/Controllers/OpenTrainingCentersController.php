@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\TraningCenter;
+use App\Models\TrainingCenter;
 
 class OpenTrainingCentersController extends Controller
 {
     //
 
     public function getOpenTrainingCenters(){
-        return TraningCenter::all();
+        return TrainingCenter::all();
     }
 }

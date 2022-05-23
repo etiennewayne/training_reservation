@@ -26,6 +26,6 @@ class TrainingCenterSeeder extends Seeder
 
         ];
 
-        \App\Models\TraningCenter::insertOrIgnore($data);
+        \App\Models\TrainingCenter::insertOrIgnore($data);
     }
 }

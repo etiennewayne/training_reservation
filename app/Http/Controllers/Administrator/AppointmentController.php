@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Models\Appointment;
+use App\Models\AppointmentType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,57 +34,53 @@ class AppointmentController extends Controller
     }
 
     public function show($id){
-        return \DB::table('appointment_types as a')
-            ->join('offices as b', 'a.office_id', 'b.office_id')
-            ->where('a.appointment_type_id', $id)
-            ->get();
+        return Appointment::find($id);
     }
 
 
     public function getAppointments(Request $req){
-        $data = Appointment::with(['user'])->paginate($req->per_page);
-
+        $data = Appointment::with(['user', 'training_center'])->paginate($req->per_page);
         return $data;
     }
 
 
 
-    public function store(Request $req){
-        $req->validate([
-            'office_id' => ['required'],
-            'appointment_type' => ['required', 'max:100', 'string', 'unique:appointment_types'],
-            'cc_time' => ['required'],
-            'max_multiple' => ['required']
-        ]);
-
-        AppointmentType::create([
-            'office_id' => $req->office_id,
-            'appointment_type' => strtoupper($req->appointment_type),
-            'cc_time' => $req->cc_time,
-            'max_multiple' => $req->max_multiple
-        ]);
-
-        return response()->json([
-            'status' => 'saved'
-        ],200);
-    }
-
     public function update(Request $req, $id){
-        $validate = $req->validate([
-            'office_id' => ['required'],
-            'appointment_type' => ['required', 'max:100', 'string', 'unique:appointment_types,appointment_type,' .$id .',appointment_type_id'],
-            'cc_time' => ['required']
+        $req->validate([
+            'app_date' => ['required'],
+            'app_time' => ['required'],
         ]);
 
-        $data = AppointmentType::find($id);
-        $data->office_id = $req->office_id;
-        $data->appointment_type = strtoupper($req->appointment_type);
-        $data->cc_time = $req->cc_time;
-        $data->max_multiple = $req->max_multiple;
+        $date =  $req->app_date;
+        $ndate = date("Y-m-d", strtotime($date)); //convert to date format UNIX
+
+        $time = $req->app_time;
+        $ntime = date('H:i:s',strtotime($time)); //convert to format time UNIX
+
+        $data = Appointment::find($id);
+        $data->training_center_id  = $req->training_center;
+        $data->app_date  = $ndate;
+        $data->app_time = $ntime;
+        $data->remarks = $req->remarks;
         $data->save();
 
         return response()->json([
             'status' => 'updated'
+        ],200);
+    }
+
+
+
+
+
+    public function approveAppointment($id){
+        $data = Appointment::find($id);
+
+        $data->app_status = 1;
+        $data->save();
+
+        return response()->json([
+            'status' => 'approved'
         ],200);
     }
 

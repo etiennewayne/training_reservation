@@ -2,8 +2,8 @@
     <div>
         <div class="section">
 
-            <div class="columns">
-                <div class="column is-8 is-offset-2">
+            <div class="columns is-centered">
+                <div class="column is-10">
                     <div class="box">
                         <div class="is-flex is-justify-content-center mb-2" style="font-size: 20px; font-weight: bold;">LIST OF APPOINTMENT</div>
 
@@ -41,59 +41,70 @@
                         </div>
 
 
+                        <div class="table-container">
+                            <b-table
+                                :data="data"
+                                :loading="loading"
+                                paginated
+                                backend-pagination
+                                :total="total"
+                                :per-page="perPage"
+                                @page-change="onPageChange"
+                                aria-next-label="Next page"
+                                aria-previous-label="Previous page"
+                                aria-page-label="Page"
+                                aria-current-label="Current page"
+                                backend-sorting
+                                :default-sort-direction="defaultSortDirection"
+                                @sort="onSort">
 
-                        <b-table
-                            :data="data"
-                            :loading="loading"
-                            paginated
-                            backend-pagination
-                            :total="total"
-                            :per-page="perPage"
-                            @page-change="onPageChange"
-                            aria-next-label="Next page"
-                            aria-previous-label="Previous page"
-                            aria-page-label="Page"
-                            aria-current-label="Current page"
-                            backend-sorting
-                            :default-sort-direction="defaultSortDirection"
-                            @sort="onSort">
+                                <b-table-column field="appointment_id" label="ID" v-slot="props">
+                                    {{ props.row.appointment_id }}
+                                </b-table-column>
 
-                            <b-table-column field="appointment_id" label="ID" v-slot="props">
-                                {{ props.row.appointment_id }}
-                            </b-table-column>
+                                <b-table-column field="ref_no" label="Reference No." v-slot="props">
+                                    {{ props.row.ref_no }}
+                                </b-table-column>
 
-                             <b-table-column field="ref_no" label="Reference No." v-slot="props">
-                                {{ props.row.ref_no }}
-                            </b-table-column>
+                                <b-table-column field="training_center" label="Training Center" v-slot="props">
+                                    {{ props.row.training_center.training_center }}
+                                </b-table-column>
 
-                            <b-table-column field="fullname" label="Appointee" v-slot="props">
-                                {{ props.row.user.lname }}, {{ props.row.user.fname }} {{ props.row.user.mname }}
-                            </b-table-column>
+                                <b-table-column field="fullname" label="Appointee" v-slot="props">
+                                    {{ props.row.user.lname }}, {{ props.row.user.fname }} {{ props.row.user.mname }}
+                                </b-table-column>
 
-                            <b-table-column field="app_date" label="Appointment Date" v-slot="props">
-                                {{ props.row.app_date }}
-                            </b-table-column>
+                                <b-table-column field="app_date" label="Appointment Date" v-slot="props">
+                                    {{ props.row.app_date }}
+                                </b-table-column>
 
-                            <b-table-column field="app_time" label="Appointment Time" v-slot="props">
-                                {{ props.row.app_time }}
-                            </b-table-column>
+                                <b-table-column field="app_time" label="Appointment Time" v-slot="props">
+                                    {{ props.row.app_time || formatTime }}
+                                </b-table-column>
 
-                            <b-table-column field="remarks" label="Remarks" v-slot="props">
-                                {{ props.row.remarks }}
-                            </b-table-column>
+                                <b-table-column field="app_status" label="Remarks" v-slot="props">
+                                    <span v-if="props.row.app_status === 0" class="pending">PENDING</span>
+                                    <span v-else-if="props.row.app_status === 1" class="approved">APPROVED</span>
+                                    <span v-else class="cancelled">CANCELLED</span>
+                                </b-table-column>
 
-                            <b-table-column label="Action" v-slot="props">
-                                <div class="is-flex">
-                                    <b-tooltip label="Edit" type="is-warning">
-                                        <b-button class="button is-small is-warning mr-1" tag="a" icon-right="pencil" @click="getData(props.row.appointment_type_id)"></b-button>
-                                    </b-tooltip>
-                                    <b-tooltip label="Delete" type="is-danger">
-                                        <b-button class="button is-small is-danger mr-1" icon-right="delete" @click="confirmDelete(props.row.appointment_type_id)"></b-button>
-                                    </b-tooltip>
-                                </div>
-                            </b-table-column>
+                                <b-table-column field="remarks" label="Remarks" v-slot="props">
+                                    {{ props.row.remarks }}
+                                </b-table-column>
 
-                        </b-table>
+                                <b-table-column label="Action" v-slot="props">
+                                    <div class="is-flex">
+                                        <b-tooltip label="Edit" type="is-warning">
+                                            <b-button v-if="props.row.app_status === 0" class="button is-small is-warning mr-1" tag="a" icon-right="pencil" @click="getData(props.row.appointment_id)"></b-button>
+                                        </b-tooltip>
+
+                                        <b-tooltip label="Approve" type="is-info">
+                                            <b-button v-if="props.row.app_status === 0" class="button is-small is-info mr-1" icon-right="thumb-up-outline" @click="confirmApproveAppointment(props.row.appointment_id)"></b-button>
+                                        </b-tooltip>
+                                    </div>
+                                </b-table-column>
+                            </b-table>
+                        </div> <!--table container -->
 
                         <div class="buttons mt-3">
                             <b-button @click="openModal" icon-right="account-arrow-up-outline" class="is-success">NEW</b-button>
@@ -129,32 +140,32 @@
 
                     <section class="modal-card-body">
                         <div class="">
+                            <b-field label="SELECT DATE" grouped  expanded class="is-centered" label-position="on-border"
+                                     :type="this.errors.appointment ? 'is-danger':''"
+                                     :message="this.errors.appointment ? this.errors.appointment[0] : ''">
+                                <b-datetimepicker rounded expanded
+                                                  v-model="fields.appointment_date"
+                                                  placeholder="Type or select a date..."
+                                                  icon="calendar-today"
+                                                  :locale="locale"
+                                                  editable>
+                                </b-datetimepicker>
+                            </b-field>
 
-                            <div class="columns">
-                                <div class="column">
-                                    <b-field label="Appointment Type"
-                                             :type="this.errors.appointment ? 'is-danger':''"
-                                             :message="this.errors.appointment ? this.errors.appointment[0] : ''">
-                                        <b-datetimepicker v-model="fields.appointment"
-                                                 placeholder="Appointment" required>
-                                        </b-datetimepicker>
-                                    </b-field>
-                                </div>
-                            </div>
+                            <b-field label="TRAINING CENTER" expanded label-position="on-border"
+                                     :type="errors.training_center ? 'is-danger' : ''"
+                                     :message="errors.training_center ? errors.training_center[0] : ''">
+                                <b-select v-model="fields.training_center" expanded rounded>
+                                    <option v-for="(item, index) in trainingCenters" :key="index" :value="item.training_center_id">{{ item.training_center }}</option>
+                                </b-select>
+                            </b-field>
 
-                            <div class="columns">
-                                <div class="column">
-                                    <b-field label="TRAINING CENTER" expanded label-position="on-border"
-                                         :type="errors.training_center ? 'is-danger' : ''"
-                                         :message="errors.training_center ? errors.training_center[0] : ''">
-                                    <b-select v-model="fields.training_center" expanded rounded>
-                                        <option v-for="(item, index) in trainingCenters" :key="index" :value="item.traning_center_id">{{ item.training_center }}</option>
-                                    </b-select>
-                                </b-field>
-                                </div>
-                            </div>
 
-                            
+                            <b-field label="Remarks" expanded label-position="on-border">
+                                <b-input type="textarea" v-model="fields.remarks" placeholder="Remarks"></b-input>
+                            </b-field>
+
+
                         </div>
                     </section>
                     <footer class="modal-card-foot">
@@ -177,7 +188,7 @@
 
 <script>
 export default {
-    name: "AppointmentType",
+
     data(){
         return{
             data: [],
@@ -205,13 +216,13 @@ export default {
                 appointment_type: '',
             },
 
-            
+
 
             trainingCenters: [],
 
             errors: {},
 
-    
+
 
             btnClass: {
                 'is-success': true,
@@ -304,7 +315,7 @@ export default {
         },
         //execute delete after confirming
         deleteSubmit(delete_id) {
-            axios.delete('/appointment-type/' + delete_id).then(res => {
+            axios.delete('/appointments/' + delete_id).then(res => {
                 this.loadAsyncData();
             }).catch(err => {
                 if (err.response.status === 422) {
@@ -321,22 +332,24 @@ export default {
 
 
             //nested axios for getting the address 1 by 1 or request by request
-            axios.get('/appointment-type/'+data_id).then(res=>{
-                this.fields = res.data[0];
+            axios.get('/appointments/' + data_id).then(res=>{
+                this.fields.training_center = res.data.training_center_id;
+                let dateNTime = res.data.app_date + ' ' + res.data.app_time;
+                this.fields.appointment_date = new Date(dateNTime);
+                this.fields.remarks = res.data.remarks;
+
             });
         },
 
-        clearFields(){
-            this.fields = {
-                appointment_type: '',
-            };
-        },
-
-
         submit: function(){
+
+            this.fields.app_date = new Date(this.fields.appointment_date).toLocaleDateString();
+            this.fields.app_time = new Date(this.fields.appointment_date).toLocaleTimeString();
+
+
             if(this.global_id > 0){
                 //update
-                axios.put('/appointment-type/'+this.global_id, this.fields).then(res=>{
+                axios.put('/appointments/'+this.global_id, this.fields).then(res=>{
                     if(res.data.status === 'updated'){
                         this.$buefy.dialog.alert({
                             title: 'UPDATED!',
@@ -357,7 +370,7 @@ export default {
                 })
             }else{
                 //INSERT HERE
-                axios.post('/appointment-type', this.fields).then(res=>{
+                axios.post('/appointments', this.fields).then(res=>{
                     if(res.data.status === 'saved'){
                         this.$buefy.dialog.alert({
                             title: 'SAVED!',
@@ -381,6 +394,36 @@ export default {
         },
 
 
+        confirmApproveAppointment(delete_id) {
+            this.$buefy.dialog.confirm({
+                title: 'APPROVED!',
+                type: 'is-info',
+                message: 'Are you sure you want to approve this appointment?',
+                cancelText: 'Cancel',
+                confirmText: 'Approve',
+                onConfirm: () => this.approvedAppointment(delete_id)
+            });
+        },
+        approvedAppointment(dataId){
+            axios.post('/appointment-approved/' + dataId).then(res=>{
+                if(res.data.status === 'approved'){
+                    this.$buefy.dialog.alert({
+                        title: 'APPROVED!',
+                        message: 'Successfully approved.',
+                        type: 'is-success',
+                        confirmText: 'OK',
+                        onConfirm: () => {
+                            this.loadAsyncData();
+                            this.clearFields();
+                            this.global_id = 0;
+                        }
+                    })
+                }
+            })
+        },
+
+
+
         loadTrainingCenter(){
             axios.get('/get-open-training-centers').then(res=>{
                 this.trainingCenters = res.data;
@@ -390,7 +433,7 @@ export default {
     },
 
     mounted() {
-      
+
         this.loadAsyncData();
         this.loadTrainingCenter();
     }
@@ -399,5 +442,17 @@ export default {
 </script>
 
 <style scoped>
+    .approved{
+        font-weight: bold;
+        color: green;
+    }
+    .cancelled{
+        font-weight: bold;
+        color: red;
+    }
 
+    .pending{
+        font-weight: bold;
+        color: #1a73bd;
+    }
 </style>

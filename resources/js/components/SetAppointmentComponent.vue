@@ -20,13 +20,14 @@
                                          :type="errors.training_center ? 'is-danger' : ''"
                                          :message="errors.training_center ? errors.training_center[0] : ''">
                                     <b-select v-model="appointment.training_center" expanded rounded>
-                                        <option v-for="(item, index) in trainingCenters" :key="index" :value="item.traning_center_id">{{ item.training_center }}</option>
+                                        <option v-for="(item, index) in trainingCenters" :key="index" :value="item.training_center_id">{{ item.training_center }}</option>
                                     </b-select>
                                 </b-field>
 
                                 <b-field label="Remarks" expanded label-position="on-border">
                                     <b-input type="textarea" v-model="appointment.remarks" placeholder="Remarks"></b-input>
                                 </b-field>
+
 
 
                                 <b-notification v-if="this.errors.not_allowed"

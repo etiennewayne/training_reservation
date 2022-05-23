@@ -64,6 +64,11 @@
                                 {{ props.row.ref_no }}
                             </b-table-column>
 
+                            <b-table-column field="training_center" label="Training Center" v-slot="props">
+                                {{ props.row.training_center.training_center }}
+                            </b-table-column>
+
+
                             <b-table-column field="app_date" label="Appointment Date" v-slot="props">
                                 {{ props.row.app_date }}
                             </b-table-column>
@@ -77,8 +82,8 @@
                             </b-table-column>
 
                             <b-table-column field="is_approved" label="Is Approved" v-slot="props">
-                                <span style="font-weight: bold; color: green;" v-if="props.row.is_approved === 1">APPROVED</span>
-                                <span style="font-weight: bold; color: red;" v-else-if="props.row.is_approved === 2">CANCELLED</span>
+                                <span style="font-weight: bold; color: green;" v-if="props.row.app_status === 1">APPROVED</span>
+                                <span style="font-weight: bold; color: red;" v-else-if="props.row.app_status === 2">CANCELLED</span>
                                 <span style="font-weight: bold; color: blue;" v-else>PENDING</span>
                             </b-table-column>
 

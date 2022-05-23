@@ -8,7 +8,7 @@
                 <div class="burger-div"></div>
             </div>
         </div>
-         
+
             <b-sidebar
                 type="is-light"
                 :fullheight="fullheight"
@@ -23,7 +23,9 @@
                         <b-menu-list label="Menu">
 
                             <b-menu-item icon="information-outline" label="Dashboard" tag="a" href="/cpanel"></b-menu-item>
-                            
+
+                            <b-menu-item label="Training Center" icon="domain" tag="a" href="/training-centers"></b-menu-item>
+
                             <b-menu-item label="Appointment" icon="calendar-month-outline" tag="a" href="/appointments"></b-menu-item>
 
                              <b-menu-item label="User" icon="account" tag="a" href="/users"></b-menu-item>
@@ -37,7 +39,7 @@
             </b-sidebar>
 
     </div>
-    
+
 
 </template>
 

@@ -11,7 +11,7 @@
 
                             <div class="container">
 
-                                <div class="columns is-centered">
+<!--                                <div class="columns is-centered">
                                     <div class="column is-6">
                                         <div class="qr-container">
                                             <div>QR CODE: {{ fields.qr_ref }}</div>
@@ -20,7 +20,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
 
                                 <div class="columns">
                                     <div class="column">

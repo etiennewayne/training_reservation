@@ -65,7 +65,11 @@ Route::get('/get-user-offices', [App\Http\Controllers\Administrator\UserControll
 //APPOINTMENT
 Route::resource('/appointments', App\Http\Controllers\Administrator\AppointmentController::class);
 Route::get('/get-appointments', [App\Http\Controllers\Administrator\AppointmentController::class, 'getAppointments']);
+Route::post('/appointment-approved/{id}', [App\Http\Controllers\Administrator\AppointmentController::class, 'approveAppointment']);
 
+
+Route::resource('/training-centers', App\Http\Controllers\Administrator\TrainingCenterController::class);
+Route::get('/get-training-centers', [App\Http\Controllers\Administrator\TrainingCenterController::class, 'getTrainingCenters']);
 
 Route::get('/get-open-training-centers', [App\Http\Controllers\OpenTrainingCentersController::class, 'getOpenTrainingCenters']);
 
