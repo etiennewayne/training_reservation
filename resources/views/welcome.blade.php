@@ -10,9 +10,5 @@
     @endauth
 
 
-
-
-    <footer-page></footer-page>
-
 @endsection
 

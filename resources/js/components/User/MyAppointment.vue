@@ -73,8 +73,8 @@
                                 {{ props.row.app_date }}
                             </b-table-column>
 
-                            <b-table-column field="app_time" label="Appointment Time" v-slot="props">
-                                {{ props.row.app_time }}
+                            <b-table-column field="app_time" label="Time" v-slot="props">
+                                {{ props.row.app_time_from | formatTime }} - {{ props.row.app_time_to | formatTime }}
                             </b-table-column>
 
                             <b-table-column field="remarks" label="Remarks" v-slot="props">

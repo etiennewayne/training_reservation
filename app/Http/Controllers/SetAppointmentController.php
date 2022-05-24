@@ -16,22 +16,24 @@ class SetAppointmentController extends Controller
         $date =  $req->app_date;
         $ndate = date("Y-m-d", strtotime($date)); //convert to date format UNIX
 
-        $time = $req->app_time;
-        $ntime = date('H:i:s',strtotime($time)); //convert to format time UNIX
+        $timeFrom = $req->app_time_from;
+        $timeTo = $req->app_time_to;
+
+        $ntimeFrom = date('H:i:s',strtotime($timeFrom)); //convert to format time UNIX
+        $ntimeTo = date('H:i:s',strtotime($timeTo)); //convert to format time UNIX
 
         $user = Auth::user();
 
         $n = time() . $user->lname . $user->fname;
         $refcode = substr(md5($n), -8);
 
-
-
         Appointment::create([
             'ref_no' => $refcode,
             'appointment_user_id' => $user->user_id,
             'training_center_id' => $req->training_center,
             'app_date' => $ndate,
-            'app_time' => $ntime,
+            'app_time_from' => $ntimeFrom,
+            'app_time_to' => $ntimeTo,
             'app_status' => 0,
             'remarks' => $req->remarks,
         ]);

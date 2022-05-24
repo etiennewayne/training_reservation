@@ -23,7 +23,9 @@ class CreateAppointmentsTable extends Migration
             $table->foreign('training_center_id')->references('training_center_id')->on('training_centers');
 
             $table->date('app_date')->nullable();
-            $table->time('app_time')->nullable();
+            $table->time('app_time_from')->nullable();
+            $table->time('app_time_to')->nullable();
+
             $table->text('remarks')->nullable();
             $table->tinyInteger('app_status')->default(0);
             $table->timestamps();

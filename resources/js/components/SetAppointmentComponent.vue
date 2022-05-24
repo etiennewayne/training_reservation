@@ -8,14 +8,37 @@
                             <div class="p-2">
                                 <h1 class="title is-4 mb-4">SET AN APPOINTMENT NOW</h1>
                                 <b-field label="SELECT DATE" grouped  expanded class="is-centered" label-position="on-border">
-                                    <b-datetimepicker rounded expanded
-                                                      v-model="appointment.appointment_date"
-                                                      placeholder="Type or select a date..."
-                                                      icon="calendar-today"
-                                                      :locale="locale"
-                                                      editable>
-                                    </b-datetimepicker>
+                                    <b-datepicker rounded expanded
+                                          v-model="appointment.appointment_date"
+                                          placeholder="Type or select a date..."
+                                          icon="calendar-today"
+                                          :locale="locale"
+                                          editable>
+                                    </b-datepicker>
                                 </b-field>
+
+                                <b-field label="SELECT TIME (FROM - TO)" grouped  expanded class="is-centered" label-position="on-border">
+                                    <b-timepicker
+                                        rounded
+                                        placeholder="From..."
+                                        icon="clock"
+                                        v-model="appointment.appointment_time_from"
+                                        :enable-seconds="false"
+                                        editable
+                                        :locale="locale">
+                                    </b-timepicker>
+
+                                    <b-timepicker
+                                        rounded
+                                        placeholder="To..."
+                                        icon="clock"
+                                        v-model="appointment.appointment_time_to"
+                                        :enable-seconds="false"
+                                        editable
+                                        :locale="locale">
+                                    </b-timepicker>
+                                </b-field>
+
                                 <b-field label="TRAINING CENTER" expanded label-position="on-border"
                                          :type="errors.training_center ? 'is-danger' : ''"
                                          :message="errors.training_center ? errors.training_center[0] : ''">
@@ -31,9 +54,9 @@
 
 
                                 <b-notification v-if="this.errors.not_allowed"
-                                                type="is-danger is-light"
-                                                aria-close-label="Close notification"
-                                                role="alert">
+                                    type="is-danger is-light"
+                                    aria-close-label="Close notification"
+                                    role="alert">
                                     {{ this.errors.not_allowed[0] }}
                                 </b-notification>
 
@@ -89,7 +112,9 @@ export default {
         submitAppointment(){
 
             this.appointment.app_date = new Date(this.appointment.appointment_date).toLocaleDateString();
-            this.appointment.app_time = new Date(this.appointment.appointment_date).toLocaleTimeString();
+            //this.appointment.app_time = new Date(this.appointment.appointment_date).toLocaleTimeString();
+            this.appointment.app_time_from = new Date(this.appointment.appointment_time_from).toLocaleTimeString();
+            this.appointment.app_time_to = new Date(this.appointment.appointment_time_to).toLocaleTimeString();
 
             axios.post('/set-appointment', this.appointment).then(res=>{
 

@@ -13,7 +13,7 @@ class Appointment extends Model
     protected $primaryKey = 'appointment_id';
 
     protected $fillable = ['ref_no', 'appointment_user_id', 'training_center_id',
-        'app_date', 'app_time',
+        'app_date', 'app_time_from', 'app_time_to',
         'app_status', 'remarks'];
 
 
