@@ -53,10 +53,10 @@ class MyAppointmentController extends Controller
 
     public function upcomingAppointment(){
         $data = DB::table('appointments as a')
-            ->join('appointment_types as b', 'a.appointment_type_id', 'b.appointment_type_id')
-            ->join('users as c', 'a.appointment_user_id', 'c.user_id')
+            ->join('users as b', 'a.appointment_user_id', 'b.user_id')
+            ->join('training_centers as c', 'a.training_center_id', 'c.training_center_id')
             ->orderBy('appointment_id', 'desc')
-            ->where('c.user_id', Auth::user()->user_id)
+            ->where('b.user_id', Auth::user()->user_id)
             ->first();
         return $data;
     }

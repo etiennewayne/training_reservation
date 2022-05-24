@@ -10,15 +10,15 @@
                                 <strong>DATE:</strong> {{ appointment.app_date }}
                             </div>
                             <div>
-                                <strong>TIME:</strong> {{ appointment.app_time_from }} - {{ appointment.app_time_to }}
+                                <strong>TIME:</strong> {{ appointment.app_time }}
                             </div>
                             <div>
-                                <strong>TYPE:</strong> {{ appointment.appointment_type }}
+                                <strong>TRANING CENTER:</strong> {{ appointment.training_center }}
                             </div>
                             <div>
                                 <strong>STATUS:</strong>
-                                <span v-if="appointment.is_approved == 1">APPROVED</span>
-                                <span v-else-if="appointment.is_approved == 2">CANCELLED</span>
+                                <span v-if="appointment.app_status == 1">APPROVED</span>
+                                <span v-else-if="appointment.app_status == 2">CANCELLED</span>
                                 <span v-else>PENDING</span>
                             </div>
 
