@@ -170,7 +170,7 @@
                                         <b-field label="SELECT TIME TO" label-position="on-border">
                                             <b-timepicker
                                                 rounded
-                                                placeholder="From..."
+                                                placeholder="To..."
                                                 icon="clock"
                                                 v-model="fields.appointment_time_to"
                                                 :enable-seconds="false"

@@ -71,7 +71,7 @@
 
                             <b-table-column label="Action" v-slot="props">
                                 <div class="is-flex">
-                                    <b-tooltip label="Delete" type="is-danger">
+                                    <b-tooltip label="Edit" type="is-success">
                                         <b-button class="button is-small is-warning mr-1" icon-right="pencil" @click="getData(props.row.training_center_id)"></b-button>
                                     </b-tooltip>
 
@@ -121,7 +121,7 @@
                                     <b-field label="Training Center"
                                         :type="this.errors.training_center ? 'is-danger':''"
                                         :message="this.errors.training_center ? this.errors.training_center[0] : ''">
-                                        <b-input type="text" v-model="fields.training_center" placeholder="Ordinance Name" />
+                                        <b-input type="text" v-model="fields.training_center" placeholder="Training Center Name" />
                                     </b-field>
 
                                     <b-field label="Training Center Address"

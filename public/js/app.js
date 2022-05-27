@@ -32720,7 +32720,7 @@ var render = function () {
                                 _c("b-timepicker", {
                                   attrs: {
                                     rounded: "",
-                                    placeholder: "From...",
+                                    placeholder: "To...",
                                     icon: "clock",
                                     "enable-seconds": false,
                                     editable: "",
@@ -33632,7 +33632,7 @@ var render = function () {
                             _c("b-input", {
                               attrs: {
                                 type: "text",
-                                placeholder: "Search Ordinance Name",
+                                placeholder: "Search Training Center Name",
                               },
                               nativeOn: {
                                 keyup: function ($event) {
@@ -33900,7 +33900,7 @@ var render = function () {
                               _c("b-input", {
                                 attrs: {
                                   type: "text",
-                                  placeholder: "Ordinance Name",
+                                  placeholder: "Training Center Name",
                                 },
                                 model: {
                                   value: _vm.fields.ordinance_name,
@@ -34406,8 +34406,8 @@ var render = function () {
                                     "b-tooltip",
                                     {
                                       attrs: {
-                                        label: "Delete",
-                                        type: "is-danger",
+                                        label: "Edit",
+                                        type: "is-success",
                                       },
                                     },
                                     [
@@ -34559,7 +34559,7 @@ var render = function () {
                               _c("b-input", {
                                 attrs: {
                                   type: "text",
-                                  placeholder: "Ordinance Name",
+                                  placeholder: "Training Center Name",
                                 },
                                 model: {
                                   value: _vm.fields.training_center,
@@ -35840,7 +35840,7 @@ var staticRenderFns = [
           _c("p", [
             _c("strong", [_vm._v("TICMS")]),
             _vm._v(" by "),
-            _c("a", { attrs: { href: "#" } }, [_vm._v("Angel Lopez")]),
+            _c("a", { attrs: { href: "#" } }, [_vm._v("GADTC OJT Team Two")]),
             _vm._v(
               " with the collaboration of DICT Tangub City. An online reservation of training center of DICT.\n            "
             ),
@@ -36206,7 +36206,7 @@ var render = function () {
                               _c("b-timepicker", {
                                 attrs: {
                                   rounded: "",
-                                  placeholder: "From...",
+                                  placeholder: "To...",
                                   icon: "clock",
                                   "enable-seconds": false,
                                   editable: "",

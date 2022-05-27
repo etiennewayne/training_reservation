@@ -28,7 +28,7 @@
                                 <div class="level-item">
                                     <b-field label="Search">
                                         <b-input type="text"
-                                                 v-model="search.ordinance_name" placeholder="Search Ordinance Name"
+                                                 v-model="search.ordinance_name" placeholder="Search Training Center Name"
                                                  @keyup.native.enter="loadAsyncData"/>
                                         <p class="control">
                                              <b-tooltip label="Search" type="is-success">
@@ -116,7 +116,7 @@
                                     <b-field label="ORDINANCE NAME"
                                              :type="this.errors.ordinance_name ? 'is-danger':''"
                                              :message="this.errors.ordinance_name ? this.errors.ordinance_name[0] : ''">
-                                        <b-input type="text" v-model="fields.ordinance_name" placeholder="Ordinance Name" />
+                                        <b-input type="text" v-model="fields.ordinance_name" placeholder="Training Center Name" />
                                     </b-field>
 
                                     <b-field label="ORDINANCE"

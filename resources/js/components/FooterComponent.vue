@@ -25,7 +25,7 @@
 
             <div class="content has-text-centered mt-5">
                 <p>
-                    <strong>TICMS</strong> by <a href="#">Angel Lopez</a> with the collaboration of DICT Tangub City. An online reservation of training center of DICT.
+                    <strong>TICMS</strong> by <a href="#">GADTC OJT Team Two</a> with the collaboration of DICT Tangub City. An online reservation of training center of DICT.
                 </p>
             </div>
 
