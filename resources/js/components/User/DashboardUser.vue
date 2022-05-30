@@ -10,7 +10,7 @@
                                 <strong>DATE:</strong> {{ appointment.app_date }}
                             </div>
                             <div>
-                                <strong>TIME:</strong> {{ appointment.app_time }}
+                                <strong>TIME:</strong> {{ appointment.app_time_from | formatTime }} - {{ appointment.app_time_to | formatTime }}
                             </div>
                             <div>
                                 <strong>TRANING CENTER:</strong> {{ appointment.training_center }}
@@ -34,7 +34,10 @@
 export default {
     data(){
         return{
-            appointment: {},
+            appointment: {
+                app_time_from: '',
+                app_time_to: '',
+            },
         }
     },
 

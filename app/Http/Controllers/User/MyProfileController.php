@@ -34,12 +34,12 @@ class MyProfileController extends Controller
         $data->sex = strtoupper($req->sex);
         $data->email = $req->email;
         $data->contact_no = $req->contact_no;
-
+        
 
         $data->province = $req->province;
         $data->city = $req->city;
         $data->barangay = $req->barangay;
-
+        $data->street = $req->street;
         $data->save();
 
         return response()->json([

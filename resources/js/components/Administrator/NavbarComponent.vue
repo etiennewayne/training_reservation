@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mynav">
-            <div class="mynav-brand">ADMINISTRATOR</div>
+            <div class="mynav-brand">{{ userRole }}</div>
             <div class="burger-button" @click="open = true">
                 <div class="burger-div"></div>
                 <div class="burger-div"></div>
@@ -17,7 +17,7 @@
                 :right="right"
                 v-model="open">
                 <div class="p-4">
-                    <h3 class="title is-4">ADMINISTRATOR</h3>
+                    <h3 class="title is-4">{{ userRole }}</h3>
                     <b-menu>
 
                         <b-menu-list label="Menu">
@@ -51,7 +51,14 @@ export default {
             overlay: true,
             fullheight: true,
             fullwidth: false,
-            right: true
+            right: true,
+
+            user: {
+                role: '',
+                lname: '',
+                fname: '',
+                mname: '',
+            },
         }
     },
     methods: {
@@ -59,6 +66,23 @@ export default {
             axios.post('/logout').then(()=>{
                 window.location = '/';
             })
+        },
+
+        initData(){
+            axios.get('/init-user').then(res=>{
+                this.user = res.data;
+            });
+        },
+    },
+
+    mounted(){
+        this.initData();
+    },
+
+    computed: {
+
+        userRole(){
+            return this.user.role.toUpperCase();
         }
     }
 }

@@ -29,6 +29,12 @@ Auth::routes([
     'login' => false
 ]);
 
+Route::get('/init-user', function(){
+    if(Auth::check()){
+        return Auth::user();
+    }
+});
+
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index']);
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);

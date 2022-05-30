@@ -8107,7 +8107,13 @@ __webpack_require__.r(__webpack_exports__);
       overlay: true,
       fullheight: true,
       fullwidth: false,
-      right: true
+      right: true,
+      user: {
+        role: '',
+        lname: '',
+        fname: '',
+        mname: ''
+      }
     };
   },
   methods: {
@@ -8115,6 +8121,21 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/logout').then(function () {
         window.location = '/';
       });
+    },
+    initData: function initData() {
+      var _this = this;
+
+      axios.get('/init-user').then(function (res) {
+        _this.user = res.data;
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.initData();
+  },
+  computed: {
+    userRole: function userRole() {
+      return this.user.role.toUpperCase();
     }
   }
 });
@@ -8942,9 +8963,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
-//
 //
 //
 //
@@ -10483,7 +10501,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      appointment: {}
+      appointment: {
+        app_time_from: '',
+        app_time_to: ''
+      }
     };
   },
   methods: {
@@ -32762,7 +32783,9 @@ var render = function () {
     "div",
     [
       _c("div", { staticClass: "mynav" }, [
-        _c("div", { staticClass: "mynav-brand" }, [_vm._v("ADMINISTRATOR")]),
+        _c("div", { staticClass: "mynav-brand" }, [
+          _vm._v(_vm._s(_vm.userRole)),
+        ]),
         _vm._v(" "),
         _c(
           "div",
@@ -32808,7 +32831,7 @@ var render = function () {
             { staticClass: "p-4" },
             [
               _c("h3", { staticClass: "title is-4" }, [
-                _vm._v("ADMINISTRATOR"),
+                _vm._v(_vm._s(_vm.userRole)),
               ]),
               _vm._v(" "),
               _c(
@@ -36803,7 +36826,11 @@ var render = function () {
                 _c("strong", [_vm._v("TIME:")]),
                 _vm._v(
                   " " +
-                    _vm._s(_vm.appointment.app_time) +
+                    _vm._s(
+                      _vm._f("formatTime")(_vm.appointment.app_time_from)
+                    ) +
+                    " - " +
+                    _vm._s(_vm._f("formatTime")(_vm.appointment.app_time_to)) +
                     "\n                        "
                 ),
               ]),
