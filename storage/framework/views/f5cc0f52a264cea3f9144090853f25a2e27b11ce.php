@@ -10,10 +10,6 @@
     <?php endif; ?>
 
 
-
-
-    <footer-page></footer-page>
-
 <?php $__env->stopSection(); ?>
 
 

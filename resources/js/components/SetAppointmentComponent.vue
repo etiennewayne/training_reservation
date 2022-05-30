@@ -17,27 +17,34 @@
                                     </b-datepicker>
                                 </b-field>
 
-                                <b-field label="SELECT TIME (FROM - TO)" grouped  expanded class="is-centered" label-position="on-border">
-                                    <b-timepicker
-                                        rounded
-                                        placeholder="From..."
-                                        icon="clock"
-                                        v-model="appointment.appointment_time_from"
-                                        :enable-seconds="false"
-                                        editable
-                                        :locale="locale">
-                                    </b-timepicker>
-
-                                    <b-timepicker
-                                        rounded
-                                        placeholder="To..."
-                                        icon="clock"
-                                        v-model="appointment.appointment_time_to"
-                                        :enable-seconds="false"
-                                        editable
-                                        :locale="locale">
-                                    </b-timepicker>
-                                </b-field>
+                                <div class="columns">
+                                    <div class="column">
+                                        <b-field label="SELECT TIME FROM" label-position="on-border">
+                                            <b-timepicker
+                                                rounded
+                                                placeholder="From..."
+                                                icon="clock"
+                                                v-model="appointment.appointment_time_from"
+                                                :enable-seconds="false"
+                                                editable
+                                                :locale="locale">
+                                            </b-timepicker>
+                                        </b-field>
+                                    </div>
+                                    <div class="column">
+                                        <b-field label="SELECT TIME TO" label-position="on-border">
+                                            <b-timepicker
+                                                rounded
+                                                placeholder="From..."
+                                                icon="clock"
+                                                v-model="appointment.appointment_time_to"
+                                                :enable-seconds="false"
+                                                editable
+                                                :locale="locale">
+                                            </b-timepicker>
+                                        </b-field>
+                                    </div>
+                                </div>
 
                                 <b-field label="TRAINING CENTER" expanded label-position="on-border"
                                          :type="errors.training_center ? 'is-danger' : ''"
@@ -132,10 +139,17 @@ export default {
             }).catch(err=>{
                 if(err.response.status === 422){
                     this.errors = err.response.data.errors;
+
+                    if(this.errors.book_exist){
+                        alert(this.errors.book_exist[0]);
+                        
+                    }
+                    
                 }
                 if(err.response.status === 401){
                     this.isModalActive = true;
                 }
+                
             });
         },
 
@@ -146,6 +160,7 @@ export default {
         },
 
     },
+
     mounted() {
         this.loadTrainingCenter();
     }

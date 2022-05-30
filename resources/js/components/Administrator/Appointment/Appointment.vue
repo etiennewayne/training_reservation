@@ -28,7 +28,7 @@
                                 <div class="level-item">
                                     <b-field label="Search">
                                         <b-input type="text"
-                                                 v-model="search.app_date" placeholder="Search Appointment"
+                                                 v-model="search.reference" placeholder="Search Reference"
                                                  @keyup.native.enter="loadAsyncData"/>
                                         <p class="control">
                                              <b-tooltip label="Search" type="is-success">
@@ -79,7 +79,7 @@
                                 </b-table-column>
 
                                 <b-table-column field="app_time" label="Appointment Time" v-slot="props">
-                                    {{ props.row.app_time || formatTime }}
+                                    {{ props.row.app_time_from | formatTime }} - {{ props.row.app_time_to | formatTime }}
                                 </b-table-column>
 
                                 <b-table-column field="app_status" label="Remarks" v-slot="props">
@@ -143,18 +143,47 @@
                             <b-field label="SELECT DATE" grouped  expanded class="is-centered" label-position="on-border"
                                      :type="this.errors.appointment ? 'is-danger':''"
                                      :message="this.errors.appointment ? this.errors.appointment[0] : ''">
-                                <b-datetimepicker rounded expanded
-                                                  v-model="fields.appointment_date"
-                                                  placeholder="Type or select a date..."
-                                                  icon="calendar-today"
-                                                  :locale="locale"
-                                                  editable>
-                                </b-datetimepicker>
+                                <b-datepicker rounded expanded
+                                        v-model="fields.appointment_date"
+                                        placeholder="Type or select a date..."
+                                        icon="calendar-today"
+                                        :locale="locale"
+                                        editable>
+                                    </b-datepicker>
                             </b-field>
 
+                            <div class="columns">
+                                    <div class="column">
+                                        <b-field label="SELECT TIME FROM" label-position="on-border">
+                                            <b-timepicker
+                                                rounded
+                                                placeholder="From..."
+                                                icon="clock"
+                                                v-model="fields.appointment_time_from"
+                                                :enable-seconds="false"
+                                                editable
+                                                :locale="locale">
+                                            </b-timepicker>
+                                        </b-field>
+                                    </div>
+                                    <div class="column">
+                                        <b-field label="SELECT TIME TO" label-position="on-border">
+                                            <b-timepicker
+                                                rounded
+                                                placeholder="From..."
+                                                icon="clock"
+                                                v-model="fields.appointment_time_to"
+                                                :enable-seconds="false"
+                                                editable
+                                                :locale="locale">
+                                            </b-timepicker>
+                                        </b-field>
+                                    </div>
+                                </div>
+
                             <b-field label="TRAINING CENTER" expanded label-position="on-border"
-                                     :type="errors.training_center ? 'is-danger' : ''"
-                                     :message="errors.training_center ? errors.training_center[0] : ''">
+                                    :type="errors.training_center ? 'is-danger' : ''"
+                                    :message="errors.training_center ? errors.training_center[0] : ''">
                                 <b-select v-model="fields.training_center" expanded rounded>
                                     <option v-for="(item, index) in trainingCenters" :key="index" :value="item.training_center_id">{{ item.training_center }}</option>
                                 </b-select>
@@ -182,7 +211,6 @@
         </b-modal>
         <!--close modal-->
 
-
     </div>
 </template>
 
@@ -205,7 +233,7 @@ export default {
             global_id : 0,
 
             search: {
-                app_date: '',
+                reference: '',
             },
 
             isModalCreate: false,
@@ -216,7 +244,7 @@ export default {
                 appointment_type: '',
             },
 
-
+           
 
             trainingCenters: [],
 
@@ -240,7 +268,7 @@ export default {
         loadAsyncData() {
             const params = [
                 `sort_by=${this.sortField}.${this.sortOrder}`,
-                `type=${this.search.appointment_type}`,
+                `reference=${this.search.reference}`,
                 `perpage=${this.perPage}`,
                 `page=${this.page}`
             ].join('&')
@@ -334,7 +362,14 @@ export default {
             //nested axios for getting the address 1 by 1 or request by request
             axios.get('/appointments/' + data_id).then(res=>{
                 this.fields.training_center = res.data.training_center_id;
-                let dateNTime = res.data.app_date + ' ' + res.data.app_time;
+                let dateNTime = res.data.app_date;
+
+                console.log(res.data);
+                this.fields.appointment_time_from = new Date("2020-11-21 " + res.data.app_time_from); 
+                this.fields.appointment_time_to = new Date("2020-11-21 "+ res.data.app_time_to);
+                //adding constant date fo the trick converting string time to time
+
+
                 this.fields.appointment_date = new Date(dateNTime);
                 this.fields.remarks = res.data.remarks;
 
@@ -344,8 +379,9 @@ export default {
         submit: function(){
 
             this.fields.app_date = new Date(this.fields.appointment_date).toLocaleDateString();
-            this.fields.app_time = new Date(this.fields.appointment_date).toLocaleTimeString();
-
+            //this.fields.app_time = new Date(this.fields.appointment_date).toLocaleTimeString();
+            this.fields.app_time_from = new Date(this.fields.appointment_time_from).toLocaleTimeString();
+            this.fields.app_time_to = new Date(this.fields.appointment_time_to).toLocaleTimeString();
 
             if(this.global_id > 0){
                 //update
