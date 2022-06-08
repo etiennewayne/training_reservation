@@ -28,6 +28,10 @@ class CreateUsersTable extends Migration
             $table->string('street')->nullable();
             $table->string('email')->unique();
             $table->string('contact_no')->nullable();
+
+            $table->unsignedBigInteger('training_center_id')->nullable();
+            // $table->foreign('office_id')->references('office_id')->on('offices');
+
             $table->string('role')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

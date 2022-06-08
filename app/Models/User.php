@@ -23,7 +23,7 @@ class User extends Authenticatable
         'qr_ref',
         'username', 'lname', 'fname', 'mname', 'suffix', 'sex',
         'province', 'city', 'barangay', 'street',
-        'email', 'contact_no', 'role', 'remark', 'office_id', 'remark',
+        'email', 'contact_no','training_center_id', 'role',  'office_id',
         'password',
     ];
 
@@ -45,4 +45,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function training_center(){
+        return $this->hasOne(TrainingCenter::class, 'training_center_id', 'training_center_id');
+    }
 }

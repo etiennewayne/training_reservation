@@ -76,6 +76,11 @@
                                 {{ props.row.email }}
                             </b-table-column>
 
+                            <b-table-column field="training_center" label="Training Center" v-slot="props">
+                                <span v-if="props.row.training_center">{{ props.row.training_center.training_center }}</span>
+                                <span v-else>-</span>
+                            </b-table-column>
+
                             <b-table-column field="role" label="Role" v-slot="props">
                                 {{ props.row.role }}
                             </b-table-column>
@@ -126,10 +131,10 @@
                             <div class="columns">
                                 <div class="column">
                                     <b-field label="Username" label-position="on-border"
-                                             :type="this.errors.username ? 'is-danger':''"
-                                             :message="this.errors.username ? this.errors.username[0] : ''">
+                                            :type="this.errors.username ? 'is-danger':''"
+                                            :message="this.errors.username ? this.errors.username[0] : ''">
                                         <b-input v-model="fields.username"
-                                                 placeholder="Username" required>
+                                                placeholder="Username" required>
                                         </b-input>
                                     </b-field>
                                 </div>
@@ -138,10 +143,10 @@
                             <div class="columns">
                                 <div class="column">
                                     <b-field label="Last Name" label-position="on-border"
-                                             :type="this.errors.lname ? 'is-danger':''"
-                                             :message="this.errors.lname ? this.errors.lname[0] : ''">
+                                            :type="this.errors.lname ? 'is-danger':''"
+                                            :message="this.errors.lname ? this.errors.lname[0] : ''">
                                         <b-input v-model="fields.lname"
-                                                 placeholder="Last Name" required>
+                                                placeholder="Last Name" required>
                                         </b-input>
                                     </b-field>
                                 </div>
@@ -226,8 +231,8 @@
 
                                 <div class="column">
                                     <b-field label="Role" label-position="on-border" expanded
-                                             :type="this.errors.role ? 'is-danger':''"
-                                             :message="this.errors.role ? this.errors.role[0] : ''">
+                                            :type="this.errors.role ? 'is-danger':''"
+                                            :message="this.errors.role ? this.errors.role[0] : ''">
                                         <b-select v-model="fields.role" expanded>
                                             <option value="ADMIN">ADMINISTRATOR</option>
                                             <option value="STAFF">STAFF</option>
@@ -235,14 +240,27 @@
                                         </b-select>
                                     </b-field>
                                 </div>
+                            </div>
 
+
+                            <div class="columns">
+                                <div class="column">
+                                    <b-field label="Training Center" label-position="on-border" expanded
+                                            :type="this.errors.training_center ? 'is-danger':''"
+                                            :message="this.errors.training_center ? this.errors.training_center[0] : ''"
+                                            >
+                                        <b-select v-model="fields.training_center" expanded>
+                                            <option v-for="(item, index) in training_centers" :key="index" :value="item.training_center_id">{{ item.training_center }}</option>
+                                        </b-select>
+                                    </b-field>
+                                </div>
                             </div>
 
                             <div class="columns">
                                 <div class="column">
                                     <b-field label="Province" label-position="on-border" expanded
-                                             :type="this.errors.province ? 'is-danger':''"
-                                             :message="this.errors.province ? this.errors.province[0] : ''">
+                                            :type="this.errors.province ? 'is-danger':''"
+                                            :message="this.errors.province ? this.errors.province[0] : ''">
                                         <b-select v-model="fields.province" @input="loadCity" expanded>
                                             <option v-for="(item, index) in provinces" :key="index" :value="item.provCode">{{ item.provDesc }}</option>
                                         </b-select>
@@ -325,11 +343,11 @@ export default{
                 username: '',
                 lname: '', fname: '', mname: '',
                 password: '', password_confirmation : '',
-                sex : '', role: '', office: '', remark: '',  email : '', contact_no : '',
+                sex : '', role: '', training_center: '', remark: '',  email : '', contact_no : '',
                 province: '', city: '', barangay: '', street: ''
             },
             errors: {},
-            offices: [],
+            training_centers: [],
 
             btnClass: {
                 'is-success': true,
@@ -515,7 +533,7 @@ export default{
             //nested axios for getting the address 1 by 1 or request by request
             axios.get('/users/'+data_id).then(res=>{
                 this.fields = res.data;
-                this.fields.office = res.data.office_id;
+                this.fields.training_center = res.data.training_center_id;
                 let tempData = res.data;
                 //load city first
                 axios.get('/load-cities?prov=' + this.fields.province).then(res=>{
@@ -529,7 +547,12 @@ export default{
             });
         },
 
-     
+
+        loadTrainingCenters(){
+            axios.get('/get-open-training-centers').then(res=>{
+                this.training_centers = res.data;
+            });
+        },
 
 
     },
@@ -538,6 +561,7 @@ export default{
     
         this.loadAsyncData();
         this.loadProvince();
+        this.loadTrainingCenters();
     }
 }
 </script>

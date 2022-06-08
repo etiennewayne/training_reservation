@@ -24,11 +24,13 @@
 
                             <b-menu-item icon="information-outline" label="Dashboard" tag="a" href="/cpanel"></b-menu-item>
 
+                            <b-menu-item label="Office" icon="domain" tag="a" href="/offices"></b-menu-item>
+
                             <b-menu-item label="Training Center" icon="domain" tag="a" href="/training-centers"></b-menu-item>
 
                             <b-menu-item label="Appointment" icon="calendar-month-outline" tag="a" href="/appointments"></b-menu-item>
 
-                             <b-menu-item label="User" icon="account" tag="a" href="/users"></b-menu-item>
+                            <b-menu-item label="User" icon="account" tag="a" href="/users"></b-menu-item>
                         </b-menu-list>
 
                         <b-menu-list label="Actions">

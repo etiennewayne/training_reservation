@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+
+use Auth;
+
+
 class AppointmentController extends Controller
 {
     //
@@ -39,9 +43,18 @@ class AppointmentController extends Controller
 
 
     public function getAppointments(Request $req){
-        $data = Appointment::with(['user', 'training_center'])
-            ->where('ref_no', 'like', $req->reference . '%')
-            ->paginate($req->per_page);
+        $user = Auth::user();
+        if($user->training_center_id){
+            $data = Appointment::with(['user', 'training_center'])
+                ->where('training_center_id', $user->training_center_id)
+                ->where('ref_no', 'like', $req->reference . '%')
+                ->paginate($req->per_page);
+        }else{
+            $data = Appointment::with(['user', 'training_center'])
+                ->where('ref_no', 'like', $req->reference . '%')
+                ->paginate($req->per_page);
+        }
+        
         return $data;
     }
 

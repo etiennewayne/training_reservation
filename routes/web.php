@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -79,9 +81,10 @@ Route::get('/get-training-centers', [App\Http\Controllers\Administrator\Training
 
 Route::get('/get-open-training-centers', [App\Http\Controllers\OpenTrainingCentersController::class, 'getOpenTrainingCenters']);
 
+//Offices
+Route::resource('/offices', App\Http\Controllers\Administrator\OfficeController::class);
+Route::get('/get-offices', [App\Http\Controllers\Administrator\OfficeController::class, 'getOffices']);
 
-Route::resource('/ordinance', App\Http\Controllers\Administrator\OrdinanceController::class);
-Route::get('/get-ordinances', [App\Http\Controllers\Administrator\OrdinanceController::class, 'getOrdinances']);
 
 Route::get('/get-open-ordinances', [App\Http\Controllers\CovidUpdatesController::class, 'getOrdinances']);
 

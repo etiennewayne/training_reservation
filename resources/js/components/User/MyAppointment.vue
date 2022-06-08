@@ -92,7 +92,7 @@
 
 
                                     <b-tooltip label="Cancel appointment" type="is-danger">
-                                        <b-button class="button is-small is-danger mr-1" icon-right="minus-circle" @click="cancelAppointment(props.row)"></b-button>
+                                        <b-button v-if="props.row.app_status === 0" class="button is-small is-danger mr-1" icon-right="minus-circle" @click="cancelAppointment(props.row)"></b-button>
                                     </b-tooltip>
                                 </div>
                             </b-table-column>
