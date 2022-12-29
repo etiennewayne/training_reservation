@@ -17,7 +17,7 @@ import Buefy from 'buefy'
 import VueQrcodeReader from "vue-qrcode-reader";
 //for QR CODE Generation
 import VueQrcode from '@chenfengyuan/vue-qrcode';
-
+// npm i @chenfengyuan/vue-qrcode
 
 
 
